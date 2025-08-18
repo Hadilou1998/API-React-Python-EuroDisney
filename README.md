@@ -50,7 +50,7 @@ Mettre en place une plateforme de gestion pour le site EuroDisney, permettant :
 -   **Users** (id, name, password, email, role).
 -   **Attractions** (id, name, description, capacity, status).
 -   **Tickets** (id, user_id, attraction_id, date, qr_code, status).
--   **Reservations** (id, user_id, restaurant/spectacle, date, nb_personnes).
+-   **Reservations** (id, user_id, restaurant/spectacle, date, nb_personnes, status).
 -   **Employees** (id, name, job, assignment).
 
 ---
