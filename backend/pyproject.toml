@@ -1,0 +1,26 @@
+[project]
+name = "eurodisney-api"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Hadilou1998",email = "hadilissilame@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi (>=0.116.1,<0.117.0)",
+    "uvicorn (>=0.35.0,<0.36.0)",
+    "sqlalchemy (>=2.0.43,<3.0.0)",
+    "alembic (>=1.16.4,<2.0.0)",
+    "pydantic (>=2.11.7,<3.0.0)",
+    "python-jose (>=3.5.0,<4.0.0)",
+    "passlib[bcrypt] (>=1.7.4,<2.0.0)",
+    "pymysql (>=1.1.1,<2.0.0)",
+    "qrcode (>=8.2,<9.0)",
+    "email-validator (>=2.2.0,<3.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
