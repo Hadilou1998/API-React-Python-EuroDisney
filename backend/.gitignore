@@ -1,0 +1,41 @@
+# --- Python ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+
+# --- Virtual env ---
+.env
+.venv/
+venv/
+env/
+
+# --- Poetry ---
+poetry.lock
+
+# --- Alembic ---
+alembic/*.pyc
+alembic/versions/*.py
+
+# --- Logs ---
+*.log
+
+# --- VSCode / IDE ---
+.vscode/
+.idea/
+*.iml
+
+# --- Docker ---
+/docker-data/
+/*.pid
+
+# --- Tests ---
+.coverage
+htmlcov/
+.pytest_cache/
+
+# --- OS files ---
+.DS_Store
+Thumbs.db
