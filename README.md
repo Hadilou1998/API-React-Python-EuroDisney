@@ -17,7 +17,7 @@ Mettre en place une plateforme de gestion pour le site EuroDisney, permettant :
 -   **Base de données** : MySQL pour stocker les informations des visiteurs, réservations, attractions, etc.
 -   **Conteneurisation**: Docker & docker-compose.
 -   **Gestion du code**: Git / Github.
--   **Déploiement** : Docker (avec un dossier `docker /` contenant les fichiers).
+-   **Déploiement** : Docker (avec un dossier `docker/` contenant les fichiers).
 
 ---
 
