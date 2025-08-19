@@ -26,6 +26,7 @@ alembic/versions/*.py
 .vscode/
 .idea/
 *.iml
+.vscode/settings.json
 
 # --- Docker ---
 /docker-data/
