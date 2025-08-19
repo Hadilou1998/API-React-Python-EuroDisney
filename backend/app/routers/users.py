@@ -22,6 +22,20 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     db.refresh(db_user)
     return db_user
 
+@router.post("/login", response_model=UserOut)
+def login(user: UserCreate, db: Session = Depends(get_db)):
+    db_user = db.query(User).filter(User.email == user.email).first()
+    if not db_user:
+        raise HTTPException(status_code=400, detail="Invalid credentials")
+    if not pwd_context.verify(user.password, db_user.password):
+        raise HTTPException(status_code=400, detail="Invalid credentials") from None
+    return db_user
+
+@router.post("/logout")
+def logout():
+    return {"message": "Logged out"}
+
+
 @router.get("/users", response_model=List[UserOut])
 def get_users(db: Session = Depends(get_db)):
     users = db.query(User).all()
