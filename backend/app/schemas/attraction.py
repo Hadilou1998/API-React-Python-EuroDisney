@@ -16,8 +16,13 @@ class AttractionBase(BaseModel):
 class AttractionCreate(AttractionBase):
     pass
 
+class AttractionUpdate(AttractionBase):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    location: Optional[str] = None
+
 class AttractionOut(AttractionBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True

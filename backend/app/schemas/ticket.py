@@ -9,6 +9,10 @@ class TicketBase(BaseModel):
 class TicketCreate(TicketBase):
     pass
 
+class TicketUpdate(TicketBase):
+    user_id: Optional[int] = None
+    attraction_id: Optional[int] = None
+
 class TicketOut(TicketBase):
     id: int
     date: datetime
@@ -16,4 +20,4 @@ class TicketOut(TicketBase):
     status: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True

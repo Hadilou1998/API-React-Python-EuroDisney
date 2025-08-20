@@ -14,8 +14,15 @@ class EmployeeBase(BaseModel):
 class EmployeeCreate(EmployeeBase):
     password: str
 
+class EmployeeUpdate(EmployeeBase):
+    name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    job: Optional[str] = None
+    assignment: Optional[List[AssignmentItem]] = None
+
+
 class EmployeeOut(EmployeeBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
