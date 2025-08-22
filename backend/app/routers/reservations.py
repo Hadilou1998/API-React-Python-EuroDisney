@@ -2,23 +2,27 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 from app.core.database import get_db
+from app.core.security import decode_access_token, require_role
 from app.models.reservation import Reservation
 from app.schemas.reservation import ReservationCreate, ReservationUpdate, ReservationOut
 
 router = APIRouter()
 
+# Create a new reservation
 @router.post("/", response_model=ReservationOut)
-def create_reservation(reservation: ReservationCreate, db: Session = Depends(get_db)):
-    new_reservation = Reservation(**reservation.dict())
+def create_reservation(reservation: ReservationCreate, db: Session = Depends(get_db), payload: dict = Depends(decode_access_token)):
+    user_id = payload.get("user_id")
+    new_reservation = Reservation(**reservation.dict(), user_id=user_id)
     db.add(new_reservation)
     db.commit()
     db.refresh(new_reservation)
     return new_reservation
 
+# Get all reservations
 @router.get("/", response_model=List[ReservationOut])
-def get_reservations(db: Session = Depends(get_db)):
-    reservations = db.query(Reservation).all()
-    return reservations
+def list_reservations(db: Session = Depends(get_db), payload: dict = Depends(decode_access_token)):
+    user_id = payload.get("user_id")
+    return db.query(Reservation).filter(Reservation.user_id == user_id).all()
 
 @router.get("/{reservation_id}", response_model=ReservationOut)
 def get_reservation(reservation_id: int, db: Session = Depends(get_db)):
