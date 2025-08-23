@@ -24,6 +24,7 @@ def list_reservations(db: Session = Depends(get_db), payload: dict = Depends(dec
     user_id = payload.get("user_id")
     return db.query(Reservation).filter(Reservation.user_id == user_id).all()
 
+# Get a reservation by id
 @router.get("/{reservation_id}", response_model=ReservationOut)
 def get_reservation(reservation_id: int, db: Session = Depends(get_db)):
     reservation = db.query(Reservation).filter(Reservation.id == reservation_id).first()
@@ -31,7 +32,8 @@ def get_reservation(reservation_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Reservation not found")
     return reservation
 
-@router.put("/{reservation_id}", response_model=ReservationOut)
+# Admin only update a reservation
+@router.put("/{reservation_id}", response_model=ReservationOut, dependencies=[Depends(require_role("admin"))])
 def update_reservation(reservation_id: int, reservation: ReservationUpdate, db: Session = Depends(get_db)):
     db_reservation = db.query(Reservation).filter(Reservation.id == reservation_id).first()
     if not db_reservation:
@@ -42,7 +44,8 @@ def update_reservation(reservation_id: int, reservation: ReservationUpdate, db: 
     db.refresh(db_reservation)
     return {"message": "Reservation updated successfully"}
 
-@router.delete("/{reservation_id}", response_model=ReservationOut)
+# Admin only delete a reservation
+@router.delete("/{reservation_id}", response_model=ReservationOut, dependencies=[Depends(require_role("admin"))])
 def delete_reservation(reservation_id: int, db: Session = Depends(get_db)):
     db_reservation = db.query(Reservation).filter(Reservation.id == reservation_id).first()
     if not db_reservation:

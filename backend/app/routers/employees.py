@@ -1,40 +1,38 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.core.database import get_db
+from app.core.security import require_role
 from app.models.employee import Employee
 from app.schemas.employee import EmployeeCreate, EmployeeUpdate, EmployeeOut
 from typing import List
 
 router = APIRouter()
 
-@router.post("/", response_model=EmployeeOut)
+# Admin only create new employee
+@router.post("/", response_model=EmployeeOut, dependencies=[Depends(require_role("admin"))])
 def create_employee(employee: EmployeeCreate, db: Session = Depends(get_db)):
     new_employee = Employee(**employee.dict())
     db.add(new_employee)
     db.commit()
     db.refresh(new_employee)
-    return new_employee
+    return {"message": "Employee created successfully"}
 
-@router.get("/", response_model=List[EmployeeOut])
+# Admin only read all employees
+@router.get("/", response_model=List[EmployeeOut], dependencies=[Depends(require_role("admin"))])
 def read_employees(db: Session = Depends(get_db)):
     employees = db.query(Employee).all()
     return employees
 
-@router.get("/{employee_id}", response_model=EmployeeOut)
+# Admin only read employee by id
+@router.get("/{employee_id}", response_model=EmployeeOut, dependencies=[Depends(require_role("admin"))])
 def read_employee(employee_id: int, db: Session = Depends(get_db)):
     employee = db.query(Employee).filter(Employee.id == employee_id).first()
     if not employee:
         raise HTTPException(status_code=404, detail="Employee not found")
     return employee
-    
-@router.get("/email/{email}",)
-def read_employee_by_email(email: str, db: Session = Depends(get_db)):
-    employee = db.query(Employee).filter(Employee.email == email).first()
-    if not employee:
-        raise HTTPException(status_code=404, detail="Employee not found")
-    return employee
 
-@router.put("/{employee_id}", response_model=EmployeeOut)
+# Admin only update employee by id
+@router.put("/{employee_id}", response_model=EmployeeOut, dependencies=[Depends(require_role("admin"))])
 def update_employee(employee_id: int, employee: EmployeeUpdate, db: Session = Depends(get_db)):
     db_employee = db.query(Employee).filter(Employee.id == employee_id).first() if db_employee else None
     if not db_employee:
@@ -46,7 +44,8 @@ def update_employee(employee_id: int, employee: EmployeeUpdate, db: Session = De
     db.refresh(db_employee)
     return {"message": "Employee updated successfully"}
 
-@router.delete("/{employee_id}", response_model=EmployeeOut)
+# Admin only delete employee by id
+@router.delete("/{employee_id}", response_model=EmployeeOut, dependencies=[Depends(require_role("admin"))])
 def delete_employee(employee_id: int, db: Session = Depends(get_db)):
     db_employee = db.query(Employee).filter(Employee.id == employee_id).first()
     if not db_employee:
@@ -54,3 +53,10 @@ def delete_employee(employee_id: int, db: Session = Depends(get_db)):
     db.delete(db_employee)
     db.commit()
     return {"message": "Employee deleted successfully"}
+# Admin only read employee by email
+@router.get("/email/{email}", response_model=EmployeeOut, dependencies=[Depends(require_role("admin"))])
+def read_employee_by_email(email: str, db: Session = Depends(get_db)):
+    employee = db.query(Employee).filter(Employee.email == email).first()
+    if not employee:
+        raise HTTPException(status_code=404, detail="Employee not found") from None
+    return employee
