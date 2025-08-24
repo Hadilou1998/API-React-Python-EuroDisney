@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+sqlalchemy>=1.4
+alembic
+pydantic
+python-jose[cryptography]
+passlib[bcrypt]
+email-validator
+qrcode[pil]
+pymysql
+python-multipart
