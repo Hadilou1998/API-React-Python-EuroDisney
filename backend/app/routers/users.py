@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm
+from datetime import timedelta
 from app.core.database import get_db
 from app.models.user import User
 from app.schemas.user import UserCreate, UserOut, UserUpdate
 from app.core.security import create_access_token, get_password_hash, verify_password
-from datetime import timedelta
 from typing import List
 
 router = APIRouter()
@@ -34,10 +34,9 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
 
     return {"access_token": access_token, "token_type": "bearer"}
 
-@router.post("/logout")
+@router.get("/logout")
 def logout():
     return {"message": "Logged out"}
-
 
 @router.get("/users", response_model=List[UserOut])
 def get_users(db: Session = Depends(get_db)):
@@ -60,7 +59,6 @@ def update_user(user_id: int, user: UserUpdate, db: Session = Depends(get_db)):
     db.refresh(db_user)
     return {"message": "User updated"}
 
-
 @router.delete("/users/{user_id}")
 def delete_user(user_id: int, db: Session = Depends(get_db)):
     db_user = db.query(User).filter(User.id == user_id).first()
@@ -68,4 +66,3 @@ def delete_user(user_id: int, db: Session = Depends(get_db)):
     db.delete(db_user)
     db.commit()
     return {"message": "User deleted"}
-
