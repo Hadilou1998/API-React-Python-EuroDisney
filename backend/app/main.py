@@ -36,7 +36,7 @@ async def log_requests(request: Request, call_next):
             user = {"sub": payload.get("sub"), "role": payload.get("role")}
         except Exception as e:
             logger.warning(f"Invalid token: {e}")
-    logger.info(f"Request: {request.method} {request.url.path} - User: {user["sub"]} - Role: {user["role"]}")
+    logger.info(f"Request: {request.method} {request.url.path} - User: {user['sub']} - Role: {user['role']}")
     response = await call_next(request)
     logger.info(f"Request: {request.method} {request.url.path} - Status: {response.status_code}")
     return response
