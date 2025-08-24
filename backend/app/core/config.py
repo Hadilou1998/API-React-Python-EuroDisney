@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     secret_key: str = "mykey"
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 60
+    BACKEND_CORS_ORIGINS: str = "*"
 
     class Config:
         env_file = ".env.backend"
