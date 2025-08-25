@@ -1,7 +1,7 @@
 from datetime import datetime
 from sqlalchemy.orm import Session
 from app.database import SessionLocal, engine, Base
-from app.models import User, Attraction, AttractionStatus, Ticket, Employee, Reservation, ReservationStatus
+from app.models import User, Attraction, AttractionStatus, Ticket, Employee, Reservation
 from app.core.security import get_password_hash
 
 # create all tables if they don't exist
