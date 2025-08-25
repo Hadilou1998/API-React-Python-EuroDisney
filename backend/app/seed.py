@@ -7,7 +7,7 @@ from app.core.security import get_password_hash
 # create all tables if they don't exist
 Base.metadata.create_all(bind=engine)
 
-def seed_db():
+def seed():
     db: Session = SessionLocal()
     
     # -----------------------------
@@ -98,3 +98,24 @@ def seed_db():
     ]
     db.add_all(reservations)
     db.commit()
+
+    # -----------------------------
+    # seed employees
+    # -----------------------------
+
+    employees = [
+        Employee(name="Mickey Mouse", job="manager", assignment="Disneyland Resort"),
+        Employee(name="Minnie Mouse", job="assistant", assignment="Disneyland Resort"),
+        Employee(name="Donald Duck", job="sales", assignment="Disneyland Resort"),
+        Employee(name="Daisy Duck", job="assistant", assignment="Disneyland Resort"),
+        Employee(name="Pluto", job="marketing", assignment="Disneyland Resort"),
+        Employee(name="Goofy", job="security", assignment="Disneyland Resort"),
+    ]
+    db.add_all(employees)
+    db.commit()
+    
+    db.close()
+    print("Seeding complete successfully !")
+
+    if __name__ == "__main__":
+        seed()
