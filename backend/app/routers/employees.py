@@ -53,10 +53,3 @@ def delete_employee(employee_id: int, db: Session = Depends(get_db)):
     db.delete(db_employee)
     db.commit()
     return {"message": "Employee deleted successfully"}
-# Admin only read employee by email
-@router.get("/email/{email}", response_model=EmployeeOut, dependencies=[Depends(require_role("admin"))])
-def read_employee_by_email(email: str, db: Session = Depends(get_db)):
-    employee = db.query(Employee).filter(Employee.email == email).first()
-    if not employee:
-        raise HTTPException(status_code=404, detail="Employee not found") from None
-    return employee

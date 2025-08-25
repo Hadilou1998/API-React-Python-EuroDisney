@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
 
@@ -7,7 +7,6 @@ class AssignmentItem(BaseModel):
 
 class EmployeeBase(BaseModel):
     name: str
-    email: EmailStr
     job: str
     assignment: Optional[List[AssignmentItem]] = []
 
@@ -16,7 +15,6 @@ class EmployeeCreate(EmployeeBase):
 
 class EmployeeUpdate(EmployeeBase):
     name: Optional[str] = None
-    email: Optional[EmailStr] = None
     job: Optional[str] = None
     assignment: Optional[List[AssignmentItem]] = None
 
