@@ -9,6 +9,14 @@ Base.metadata.create_all(bind=engine)
 
 def seed():
     db: Session = SessionLocal()
+
+    # Delete all data exists
+    db.query(Reservation).delete()
+    db.query(Ticket).delete()
+    db.query(Attraction).delete()
+    db.query(User).delete()
+    db.query(Employee).delete() 
+    db.commit()
     
     # -----------------------------
     # seed users

@@ -18,7 +18,7 @@ class Reservation(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, nullable=False)
-    resource_type = Column(SAEnum(ResourceType), nullable=False)
+    resource_type = Column(String(255), nullable=False)
     date = Column(DateTime, default=datetime.now())
     nb_persons = Column(Integer, default=0)
     status = Column(SAEnum(ReservationStatus), default=ReservationStatus.pending)
