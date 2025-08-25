@@ -140,7 +140,6 @@ def seed():
         Reservation(user_id=john_id, resource_type="Annette's Diner", date=datetime(2025, 10, 5, 12, 0), nb_persons=2, status=ReservationStatus.cancelled),
         Reservation(user_id=sarah_id, resource_type="Animation Academy", date=datetime(2025, 10, 6, 13, 0), nb_persons=2, status=ReservationStatus.confirmed),
         Reservation(user_id=tom_id, resource_type="At the Puppet Chalet", date=datetime(2025, 10, 6, 14, 0), nb_persons=4, status=ReservationStatus.pending),
-        Reservation(user_id=tom_id, resource_type="At the Puppet Chalet", date=datetime(2025, 10, 6, 14, 0), nb_persons=4, status=ReservationStatus.pending),
         Reservation(user_id=alice_id, resource_type="Heroic Ceremony", date=datetime(2025, 10, 6, 15, 0), nb_persons=2, status=ReservationStatus.confirmed),
         Reservation(user_id=bob_id, resource_type="Cinderella Inn", date=datetime(2025, 10, 7, 16, 0), nb_persons=4, status=ReservationStatus.pending),
         Reservation(user_id=charlie_id, resource_type="Disney Music Hits Concert", date=datetime(2025, 10, 7, 17, 0), nb_persons=2, status=ReservationStatus.confirmed),
