@@ -67,24 +67,37 @@ def seed():
     db.add_all(attractions)
     db.commit()
 
+    # Retrieve real IDs
+    space_mountain_id = db.query(Attraction).filter(Attraction.name == "Space Mountain").first().id
+    pirates_of_the_caribbean_id = db.query(Attraction).filter(Attraction.name == "Pirates of the Caribbean").first().id
+    its_a_small_world_id = db.query(Attraction).filter(Attraction.name == "It's a Small World").first().id
+    big_thunder_mountain_id = db.query(Attraction).filter(Attraction.name == "Big Thunder Mountain").first().id
+    phantom_manor_id = db.query(Attraction).filter(Attraction.name == "Phantom Manor").first().id
+    frozen_yogurt_id = db.query(Attraction).filter(Attraction.name == "Frozen Yogurt").first().id
+
     # -----------------------------
     # seed tickets
     # -----------------------------
 
     tickets = [
-        Ticket(user_id=3, attraction_id=1, date=datetime(2025, 10, 5, 10, 0), qr_code="QR123456"),
-        Ticket(user_id=4, attraction_id=1, date=datetime(2025, 10, 5, 11, 0), qr_code="QR234567"),
-        Ticket(user_id=5, attraction_id=1, date=datetime(2025, 10, 5, 12, 0), qr_code="QR345678"),
-        Ticket(user_id=6, attraction_id=2, date=datetime(2025, 10, 6, 13, 0), qr_code="QR456789"),
-        Ticket(user_id=7, attraction_id=2, date=datetime(2025, 10, 6, 14, 0), qr_code="QR567890"),
-        Ticket(user_id=8, attraction_id=2, date=datetime(2025, 10, 6, 15, 0), qr_code="QR678901"),
-        Ticket(user_id=9, attraction_id=3, date=datetime(2025, 10, 7, 16, 0), qr_code="QR789012"),
-        Ticket(user_id=10, attraction_id=3, date=datetime(2025, 10, 7, 17, 0), qr_code="QR890123"),
-        Ticket(user_id=11, attraction_id=3, date=datetime(2025, 10, 7, 18, 0), qr_code="QR901234"),
-        Ticket(user_id=12, attraction_id=4, date=datetime(2025, 10, 8, 19, 0), qr_code="QR012345"),
-        Ticket(user_id=13, attraction_id=4, date=datetime(2025, 10, 8, 20, 0), qr_code="QR123456"),
-        Ticket(user_id=14, attraction_id=4, date=datetime(2025, 10, 8, 21, 0), qr_code="QR234567"),
-        Ticket(user_id=15, attraction_id=5, date=datetime(2025, 10, 9, 22, 0), qr_code="QR345678"),
+        Ticket(user_id=3, attraction_id=space_mountain_id, date=datetime(2025, 10, 5, 10, 0), qr_code="QR123456"),
+        Ticket(user_id=4, attraction_id=space_mountain_id, date=datetime(2025, 10, 5, 11, 0), qr_code="QR234567"),
+        Ticket(user_id=5, attraction_id=space_mountain_id, date=datetime(2025, 10, 5, 12, 0), qr_code="QR345678"),
+        Ticket(user_id=6, attraction_id=pirates_of_the_caribbean_id, date=datetime(2025, 10, 6, 13, 0), qr_code="QR456789"),
+        Ticket(user_id=7, attraction_id=pirates_of_the_caribbean_id, date=datetime(2025, 10, 6, 14, 0), qr_code="QR567890"),
+        Ticket(user_id=8, attraction_id=pirates_of_the_caribbean_id, date=datetime(2025, 10, 6, 15, 0), qr_code="QR678901"),
+        Ticket(user_id=9, attraction_id=its_a_small_world_id, date=datetime(2025, 10, 7, 16, 0), qr_code="QR789012"),
+        Ticket(user_id=10, attraction_id=its_a_small_world_id, date=datetime(2025, 10, 7, 17, 0), qr_code="QR890123"),
+        Ticket(user_id=11, attraction_id=its_a_small_world_id, date=datetime(2025, 10, 7, 18, 0), qr_code="QR901234"),
+        Ticket(user_id=12, attraction_id=big_thunder_mountain_id, date=datetime(2025, 10, 8, 19, 0), qr_code="QR012345"),
+        Ticket(user_id=13, attraction_id=big_thunder_mountain_id, date=datetime(2025, 10, 8, 20, 0), qr_code="QR123456"),
+        Ticket(user_id=14, attraction_id=big_thunder_mountain_id, date=datetime(2025, 10, 8, 21, 0), qr_code="QR234567"),
+        Ticket(user_id=15, attraction_id=phantom_manor_id, date=datetime(2025, 10, 9, 22, 0), qr_code="QR345678"),
+        Ticket(user_id=16, attraction_id=phantom_manor_id, date=datetime(2025, 10, 9, 23, 0), qr_code="QR456789"),
+        Ticket(user_id=17, attraction_id=phantom_manor_id, date=datetime(2025, 10, 10, 0, 0), qr_code="QR567890"),
+        Ticket(user_id=18, attraction_id=frozen_yogurt_id, date=datetime(2025, 10, 11, 1, 0), qr_code="QR678901"),
+        Ticket(user_id=19, attraction_id=frozen_yogurt_id, date=datetime(2025, 10, 11, 2, 0), qr_code="QR789012"),
+        Ticket(user_id=20, attraction_id=frozen_yogurt_id, date=datetime(2025, 10, 11, 3, 0), qr_code="QR890123"),
     ]
     db.add_all(tickets)
     db.commit()
