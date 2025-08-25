@@ -117,5 +117,5 @@ def seed():
     db.close()
     print("Seeding complete successfully !")
 
-    if __name__ == "__main__":
-        seed()
+if __name__ == "__main__":
+    seed()
