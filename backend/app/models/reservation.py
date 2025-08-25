@@ -1,6 +1,6 @@
 import enum
 from datetime import datetime
-from sqlalchemy import Column, Integer, DateTime, Enum as SAEnum, String
+from sqlalchemy import Column, Integer, DateTime, ForeignKey, Enum as SAEnum, String
 from sqlalchemy.orm import relationship
 from app.core.database import Base
 
@@ -17,8 +17,8 @@ class Reservation(Base):
     __tablename__ = "reservations"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     resource_type = Column(String(255), nullable=False)
-    date = Column(DateTime, default=datetime.now())
+    date = Column(DateTime, default=datetime.now)
     nb_persons = Column(Integer, default=0)
     status = Column(SAEnum(ReservationStatus), default=ReservationStatus.pending)
