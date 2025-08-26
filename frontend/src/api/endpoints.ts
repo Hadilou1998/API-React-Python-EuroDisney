@@ -17,6 +17,9 @@ import type {
 export const login = (p: LoginPayload) => api.post<LoginResponse>('/auth/login', p).then(r => r.data)
 export const register = (p: RegisterPayload) => api.post('/auth/register', p).then(r => r.data)
 
+// Users
+export const getUserTickets = (userId: number) => api.get<Ticket[]>(`/users/${userId}/tickets`).then(r => r.data)
+
 // Attraction
 export const listAttractions = () => api.get<Attraction[]>('/attractions').then(r => r.data)
 export const getAttraction = (id: number) => api.get<Attraction>(`/attractions/${id}`).then(r => r.data)
