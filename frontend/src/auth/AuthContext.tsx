@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { LoginPayload, LoginResponse, User } from "../types/api";
+import type { LoginPayload, LoginResponse, User } from "../types/api";
 import { login } from "../api/endpoints";
 
 type AuthCtx = {
@@ -10,6 +10,7 @@ type AuthCtx = {
 }
 
 const Ctx = createContext<AuthCtx | null>(null)
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => {
     const ctx = useContext(Ctx)
     if (!ctx) {
