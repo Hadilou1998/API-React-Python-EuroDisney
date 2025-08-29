@@ -136,3 +136,15 @@ a {
 .nav .spacer {
   flex: 1;
 }
+
+.login-label {
+  margin-top: 1rem;
+}
+
+.login-footer {
+  margin-top: 1rem;
+}
+
+.login-error {
+  color: red;
+}

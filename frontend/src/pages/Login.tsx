@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
+import './Login.css';
 
 export default function Login() {
     const { login } = useAuth();
@@ -26,16 +27,21 @@ export default function Login() {
     };
 
     return (
-        <form onSubmit={onSubmit}>
+        <form className="login-form" onSubmit={onSubmit}>
             <h2>Connexion</h2>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <label htmlFor='email'>Email</label>
-            <input id='email' className='input' value={email} onChange={e => setEmail(e.target.value)} required />
-            <label htmlFor='password' style={{ marginTop: '1rem' }}>Mot de passe</label>
-            <input id='password' className='input' type="password" value={password} onChange={e => setPassword(e.target.value)} required />
-            <div style={{ marginTop: '1rem' }}>
-                <button className='btn primary' disabled={loading}>{loading ? 'Chargement...' : 'Se connecter'}</button>
+            {error && <p className="login-error">{error}</p>}
+
+            <label htmlFor="email">Email</label>
+            <input id="email" className="login-input" value={email} onChange={e => setEmail(e.target.value)} required />
+
+            <label htmlFor="password">Mot de passe</label>
+            <input id="password" type="password" className="login-input" value={password} onChange={e => setPassword(e.target.value)} required />
+
+            <div className="login-footer">
+                <button className="btn-primary" disabled={loading}>
+                    {loading ? 'Chargement...' : 'Se connecter'}
+                </button>
             </div>
         </form>
     );
-};
+}
