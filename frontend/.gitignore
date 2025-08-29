@@ -24,5 +24,6 @@ pnpm-lock.yaml
 # --- System files ---
 .DS_Store
 Thumbs.db
-.hintrc
 
+# Ignore Webhint config
+.hintrc
