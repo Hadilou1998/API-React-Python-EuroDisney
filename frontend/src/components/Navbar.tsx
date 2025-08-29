@@ -17,5 +17,5 @@ export default function Navbar() {
             {user && <span>Welcome, {user.name} ({user.role})!</span>}
             {user && <button className='btn' onClick={logout}>Se déconnecter</button>}
         </nav>
-    )
+    );
 };
