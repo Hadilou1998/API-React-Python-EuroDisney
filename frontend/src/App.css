@@ -45,3 +45,13 @@
   display: flex;
   gap: 8px;
 }
+
+.form-field {
+  margin-bottom: 0.8rem;
+}
+
+.form-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
