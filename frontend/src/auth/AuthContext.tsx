@@ -7,7 +7,7 @@ type AuthCtx = {
     token: string | null;
     loginFn: (p: LoginPayload) => Promise<void>;
     logout: () => void;
-}
+};
 
 const Ctx = createContext<AuthCtx | null>(null)
 // eslint-disable-next-line react-refresh/only-export-components
@@ -17,7 +17,7 @@ export const useAuth = () => {
         throw new Error('useAuth must be used within an AuthProvider');
     }
     return ctx
-}
+};
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (user) {
             setUser(JSON.parse(user));
         }        
-    }, [])
+    }, []);
 
     const loginFn = async (p: LoginPayload) => {
         const res: LoginResponse = await login(p)
@@ -40,18 +40,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.setItem('user', JSON.stringify(res.user));
         setToken(res.access_token);
         setUser(res.user);
-    }
+    };
     
     const logout = () => {
         localStorage.removeItem('test');
         localStorage.removeItem('user');
         setToken(null);
         setUser(null);
-    }
+    };
 
     const value = useMemo(() => ({ user, token, loginFn, logout }), [user, token]);
 
     return (
         <Ctx.Provider value={value}>{children}</Ctx.Provider>
     );
-}
+};
