@@ -1,9 +1,9 @@
-import axios from 'axios'
+import axios from 'axios';
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
     withCredentials: true,
-})
+});
 
 // inject JWT
 api.interceptors.request.use((config) => {
@@ -13,6 +13,6 @@ api.interceptors.request.use((config) => {
         config.headers['Authorization'] = `Bearer ${token}`
     }
     return config
-})
+});
 
-export default api
+export default api;
