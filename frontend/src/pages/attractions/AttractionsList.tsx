@@ -28,7 +28,7 @@ export default function AttractionsList() {
                         <p>Capacity: {a.capacity} - Status: {a.status}</p>
                         {user?.role === 'admin' && (
                             <div className="actions">
-                                <button className="btn" onClick={() => nav(`/attractions/${a.id}/edit`)}>Update</button>
+                                <button className="btn" onClick={() => nav(`/attractions/${a.id}/edit`)}>Edit</button>
                                 <button className="btn" onClick={() => del.mutate(a.id)}>Delete</button>
                             </div>
                         )}
