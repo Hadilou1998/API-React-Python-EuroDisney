@@ -17,5 +17,5 @@ export default function AttractionDetail() {
             <p>Capacity: {data?.capacity}</p>
             <p>Status: {data?.status}</p>
         </div>
-    )
+    );
 };
