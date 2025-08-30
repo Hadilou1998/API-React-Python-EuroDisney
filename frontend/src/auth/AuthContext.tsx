@@ -5,7 +5,7 @@ import { login } from "../api/endpoints";
 type AuthCtx = {
     user: User | null;
     token: string | null;
-    login: (p: LoginPayload) => Promise<void>;
+    loginFn: (p: LoginPayload) => Promise<void>;
     logout: () => void;
 }
 
@@ -42,14 +42,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(res.user);
     }
     
-    const logoutFn = () => {
+    const logout = () => {
         localStorage.removeItem('test');
         localStorage.removeItem('user');
         setToken(null);
         setUser(null);
     }
 
-    const value = useMemo(() => ({ user, token, login: loginFn, logout: logoutFn }), [user, token]);
+    const value = useMemo(() => ({ user, token, loginFn, logout }), [user, token]);
 
     return (
         <Ctx.Provider value={value}>{children}</Ctx.Provider>
