@@ -1,14 +1,20 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from datetime import timedelta
+from typing import List
+from jose import JWTError, jwt
 from app.core.database import get_db
 from app.models.user import User
 from app.schemas.user import UserCreate, UserOut, UserUpdate
 from app.core.security import create_access_token, get_password_hash, verify_password
-from typing import List
+from app.core.config import settings
+
 
 router = APIRouter()
+
+# Schema Oauth2
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 @router.post("/register", response_model=UserOut)
 def register(user: UserCreate, db: Session = Depends(get_db)):
@@ -32,7 +38,34 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     access_token_expires = timedelta(minutes=60)
     access_token = create_access_token(data={"sub": str(user.id)}, expires_delta=access_token_expires)
 
-    return {"access_token": access_token, "token_type": "bearer"}
+    # We return user + token directly
+    return {"access_token": access_token, "token_type": "bearer", "user": {
+        "id": user.id,
+        "name": user.name,
+        "email": user.email,
+        "role": user.role
+    }}
+
+def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    try:
+        payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
+        user_id = payload.get("sub")
+        if user_id is None:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+    except JWTError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+    
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    return user
+
+
+@router.get("/me", response_model=UserOut)
+def get_current_user(current_user: User = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    return current_user
+
+@router.get("/users", response_model=List[UserOut])
 
 @router.get("/logout")
 def logout():
