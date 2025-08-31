@@ -42,7 +42,7 @@ def update_reservation(reservation_id: int, reservation: ReservationUpdate, db: 
         setattr(db_reservation, key, value)
     db.commit()
     db.refresh(db_reservation)
-    return {"message": "Reservation updated successfully"}
+    return db_reservation
 
 # Admin only delete a reservation
 @router.delete("/{reservation_id}", response_model=ReservationOut, dependencies=[Depends(require_role("admin"))])
@@ -52,4 +52,4 @@ def delete_reservation(reservation_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Reservation not found")
     db.delete(db_reservation)
     db.commit()
-    return {"message": "Reservation deleted successfully"}
+    return db_reservation

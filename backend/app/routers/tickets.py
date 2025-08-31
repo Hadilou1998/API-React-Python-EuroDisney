@@ -42,7 +42,7 @@ def update_ticket(ticket_id: int, ticket: TicketUpdate, db: Session = Depends(ge
         setattr(db_ticket, key, value)
     db.commit()
     db.refresh(db_ticket)
-    return {"message": "Ticket updated successfully"}
+    return db_ticket
 
 # Admin only can delete a ticket for the user
 @router.delete("/{ticket_id}", response_model=TicketOut, dependencies=[Depends(require_role("admin"))])
@@ -52,4 +52,4 @@ def delete_ticket(ticket_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Ticket not found")
     db.delete(db_ticket)
     db.commit()
-    return {"message": "Ticket deleted successfully"}
+    return db_ticket

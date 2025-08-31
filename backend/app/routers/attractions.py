@@ -41,7 +41,7 @@ def update_attraction(attraction_id: int, attraction: AttractionUpdate, db: Sess
         setattr(db_attraction, key, value)
     db.commit()
     db.refresh(db_attraction)
-    return {"message": "Attraction updated successfully"}
+    return db_attraction
 
 # Admin only delete an attraction with a specific ID
 @router.delete("/{attraction_id}", response_model=AttractionOut, dependencies=[Depends(require_role("admin"))])
@@ -51,4 +51,4 @@ def delete_attraction(attraction_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Attraction not found")
     db.delete(db_attraction)
     db.commit()
-    return {"message": "Attraction deleted successfully"}
+    return db_attraction

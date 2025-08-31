@@ -42,7 +42,7 @@ def update_employee(employee_id: int, employee: EmployeeUpdate, db: Session = De
     db.add(db_employee)
     db.commit()
     db.refresh(db_employee)
-    return {"message": "Employee updated successfully"}
+    return db_employee
 
 # Admin only delete employee by id
 @router.delete("/{employee_id}", response_model=EmployeeOut, dependencies=[Depends(require_role("admin"))])
@@ -52,4 +52,4 @@ def delete_employee(employee_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Employee not found")
     db.delete(db_employee)
     db.commit()
-    return {"message": "Employee deleted successfully"}
+    return db_employee

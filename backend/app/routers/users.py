@@ -88,7 +88,7 @@ def update_user(user_id: int, user: UserUpdate, db: Session = Depends(get_db)):
         setattr(db_user, key, value)
     db.commit()
     db.refresh(db_user)
-    return {"message": "User updated"}
+    return db_user
 
 @router.delete("/users/{user_id}")
 def delete_user(user_id: int, db: Session = Depends(get_db)):
@@ -96,4 +96,4 @@ def delete_user(user_id: int, db: Session = Depends(get_db)):
     if not db_user: return None
     db.delete(db_user)
     db.commit()
-    return {"message": "User deleted"}
+    return db_user
