@@ -1,6 +1,6 @@
 /* webhint-disable no-inline-styles */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import FormField from '../components/FormField';
@@ -12,6 +12,13 @@ export default function Login() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    const [msg, setMsg] = useState('');
+
+    useEffect(() => {
+        if (msg) {
+            setTimeout(() => setMsg(''), 3000);
+        }
+    }, [msg]);
 
     const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -27,10 +34,11 @@ export default function Login() {
             console.log("Token:", res.access_token);
             console.log("User:", res.user);
 
+            // Message
+            setMsg(`Welcome ${res.user.name}! You are now logged in.`);
+
             // Redirect to the dashboard page
-            setTimeout(() => {
-                nav('/dashboard', { state: { msg: `Welcome ${res.user.name}! You are now logged in.`}});
-            }, 1000);
+            nav('/attractions');
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (e: any) {
