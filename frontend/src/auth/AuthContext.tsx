@@ -29,13 +29,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const storedToken = localStorage.getItem("test");
         const storedUser = localStorage.getItem("user");
 
-        if (storedToken) {
-            setToken(storedToken);
-        }
-
+        if (storedToken) setToken(storedToken);
         if (storedUser) {
             try {
-                setUser(JSON.parse(storedUser));
+                const parsedUser = JSON.parse(storedUser);
+                setUser(parsedUser);
             } catch (e) {
                 console.warn("Failed to parse stored user:", e);
                 localStorage.removeItem("user");
@@ -50,29 +48,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setToken(res.access_token);
 
         // Retrieve user to /me
-        let userRes: User;
-        try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/me`, {
-                headers: { 
-                    Authorization : `Bearer ${res.access_token}`,
-                    "Content-Type": "application/json",
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error(`Failed to fetch user info: ${response.status} ${response.statusText}`);
+        const userRes = await fetch(`${import.meta.env.VITE_API_URL}/auth/me`, {
+            headers: { 
+                Authorization : `Bearer ${res.access_token}`,
+                "Content-Type": "application/json",
             }
-
-            userRes = await response.json();
-        } catch (e) {
-            console.error("Error fetching user info:", e);
-            throw e;
+        })
+        
+        if (!userRes.ok) {
+            throw new Error(`Failed to fetch user info: ${userRes.status}`);
         }
 
-        localStorage.setItem("user", JSON.stringify(userRes));
-        setUser(userRes);
+        const userData: User = await userRes.json();
+        localStorage.setItem("user", JSON.stringify(userData));
+        setUser(userData);
 
-        return {...res, user: userRes }
+        return {...res, user: userData }
     };
 
     // Fonction de logout
@@ -84,10 +75,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     // Valeur du contexte
-    const value = useMemo(
-        () => ({ user, token, loginFn, logout }),
-        [user, token]
-    );
+    const value = useMemo(() => ({ user, token, loginFn, logout }), [user, token]);
 
     return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

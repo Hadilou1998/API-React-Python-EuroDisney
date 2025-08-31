@@ -21,30 +21,18 @@ export default function Login() {
         try {
             const res = await loginFn({ email, password });
 
-            if (!res || !res.access_token || !res.user) {
-                throw new Error("Invalid response from server");
-            }
-
-            // Debugging
             console.log("=== Login Success ===");
             console.log("Token:", res.access_token);
             console.log("User:", res.user);
 
-            // Message
+            // Affichage message et redirection
             alert(`Welcome ${res.user.name}! You are now logged in.`);
+            nav('/dashboard'); // redirection vers la page d’accueil / dashboard
 
-            // Redirect to dashboard
-            nav('/dashboard');
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
-            // Récupère erreur de ton backend si possible
-            if (err.response?.data?.detail) {
-                setError(err.response.data.detail);
-            } else if (err.message) {
-                setError(err.message);
-            } else {
-                setError('Connection failed');
-            }
+            console.error("Login failed:", err);
+            setError(err?.message || 'Connection failed');
         } finally {
             setLoading(false);
         }
