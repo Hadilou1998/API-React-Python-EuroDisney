@@ -11,11 +11,14 @@ export default function EmployeeList() {
         onSuccess: () => queryClient.invalidateQueries({ queryKey: ['employees'] })
     });
     if (isLoading) return <p>Loading...</p>;
+
+    // Protection if data is not a array
+    const employees = Array.isArray(data) ? data : [];
     
     return (
         <>
             <h2>Employees</h2>
-            <button className="btn primary" onClick={() => nav('/employees/new')}>Add</button>
+            <button className="btn primary" onClick={() => nav('/new')}>Add</button>
             <table className="table">
                 <thead>
                     <tr>
@@ -25,17 +28,23 @@ export default function EmployeeList() {
                     </tr>
                 </thead>
                 <tbody>
-                    {data?.map((emp) => (
-                        <tr key={emp.id}>
-                            <td>{emp.name}</td>
-                            <td>{emp.job}</td>
-                            <td>{emp.assignment}</td>
-                            <td style={{ display: 'flex', gap:8 }}>
-                                <button className='btn' onClick={() => nav(`/employees/${emp.id}/edit`)}>Edit</button>
-                                <button className="btn" onClick={() => del.mutate(emp.id)}>Delete</button>
-                            </td>
+                    {employees.length > 0 ? (
+                        employees.map(emp => (
+                            <tr key={emp.id}>
+                                <td>{emp.name}</td>
+                                <td>{emp.job}</td>
+                                <td>{emp.assignment}</td>
+                                <td style={{ display: 'flex', gap:8 }}>
+                                    <button className='btn' onClick={() => nav(`/${emp.id}/edit`)}>Edit</button>
+                                    <button className="btn" onClick={() => del.mutate(emp.id)}>Delete</button>
+                                </td>
+                            </tr>
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan={4}>No employees available</td>
                         </tr>
-                    ))}
+                    )}
                 </tbody>
             </table>
         </>

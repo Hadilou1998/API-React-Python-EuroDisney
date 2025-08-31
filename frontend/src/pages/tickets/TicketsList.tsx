@@ -6,6 +6,9 @@ export default function TicketsList() {
     const { data, isLoading } = useQuery({ queryKey: ['tickets'], queryFn: listTickets });
     if (isLoading) return <p>Loading...</p>
 
+    // Protection if data is not a array
+    const tickets = Array.isArray(data) ? data : [];
+
     return (
         <>
             <h2>Tickets</h2>
@@ -20,15 +23,21 @@ export default function TicketsList() {
                     </tr>
                 </thead>
                 <tbody>
-                    {data?.map((t) => (
-                        <tr key={t.id}>
-                            <td><Link to={`/tickets/${t.id}`}>{t.id}</Link></td>
-                            <td>{t.user_id}</td>
-                            <td>{t.attraction_id}</td>
-                            <td>{new Date(t.date).toLocaleString()}</td>
-                            <td>{t.qr_code}</td>
+                    {tickets.length > 0 ? (
+                        tickets.map(t => (
+                            <tr key={t.id}>
+                                <td><Link to={`/${t.id}`}>{t.id}</Link></td>
+                                <td>{t.user_id}</td>
+                                <td>{t.attraction_id}</td>
+                                <td>{new Date(t.date).toLocaleString()}</td>
+                                <td>{t.qr_code}</td>
+                            </tr>
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan={5}>No tickets available</td>
                         </tr>
-                    ))}
+                    )}
                 </tbody>
             </table>
         </>
