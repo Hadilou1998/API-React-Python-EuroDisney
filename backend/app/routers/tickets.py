@@ -33,8 +33,8 @@ def get_ticket(ticket_id: int, db: Session = Depends(get_db)):
     return ticket
 
 # Admin only can update a ticket for the user
-@router.put("/{ticket_id}", response_model=TicketOut)
-def update_ticket(ticket_id: int, ticket: TicketUpdate, db: Session = Depends(get_db), payload: dict = Depends(require_role("admin"))):
+@router.put("/{ticket_id}", response_model=TicketOut, dependencies=[Depends(require_role("admin"))])
+def update_ticket(ticket_id: int, ticket: TicketUpdate, db: Session = Depends(get_db)):
     db_ticket = db.query(Ticket).filter(Ticket.id == ticket_id).first()
     if not db_ticket:
         raise HTTPException(status_code=404, detail="Ticket not found")
@@ -45,8 +45,8 @@ def update_ticket(ticket_id: int, ticket: TicketUpdate, db: Session = Depends(ge
     return {"message": "Ticket updated successfully"}
 
 # Admin only can delete a ticket for the user
-@router.delete("/{ticket_id}", response_model=TicketOut)
-def delete_ticket(ticket_id: int, db: Session = Depends(get_db), payload: dict = Depends(require_role("admin"))):
+@router.delete("/{ticket_id}", response_model=TicketOut, dependencies=[Depends(require_role("admin"))])
+def delete_ticket(ticket_id: int, db: Session = Depends(get_db)):
     db_ticket = db.query(Ticket).filter(Ticket.id == ticket_id).first()
     if not db_ticket:
         raise HTTPException(status_code=404, detail="Ticket not found")

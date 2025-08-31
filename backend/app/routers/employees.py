@@ -34,7 +34,7 @@ def read_employee(employee_id: int, db: Session = Depends(get_db)):
 # Admin only update employee by id
 @router.put("/{employee_id}", response_model=EmployeeOut, dependencies=[Depends(require_role("admin"))])
 def update_employee(employee_id: int, employee: EmployeeUpdate, db: Session = Depends(get_db)):
-    db_employee = db.query(Employee).filter(Employee.id == employee_id).first() if db_employee else None
+    db_employee = db.query(Employee).filter(Employee.id == employee_id).first()
     if not db_employee:
         raise HTTPException(status_code=404, detail="Employee not found")
     for key, value in employee.dict().items():
