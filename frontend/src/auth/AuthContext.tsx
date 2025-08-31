@@ -5,7 +5,7 @@ import { login } from "../api/endpoints";
 type AuthCtx = {
     user: User | null;
     token: string | null;
-    loginFn: (p: LoginPayload) => Promise<void>;
+    loginFn: (p: LoginPayload) => Promise<LoginResponse>;
     logout: () => void;
 };
 
@@ -47,12 +47,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }, []);
 
     // Fonction de login
-    const loginFn = async (p: LoginPayload) => {
+    const loginFn = async (p: LoginPayload): Promise<LoginResponse> => {
         const res: LoginResponse = await login(p);
         localStorage.setItem("test", res.access_token);
         localStorage.setItem("user", JSON.stringify(res.user));
         setToken(res.access_token);
         setUser(res.user);
+        return res;
     };
 
     // Fonction de logout
