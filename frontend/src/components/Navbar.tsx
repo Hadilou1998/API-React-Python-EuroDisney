@@ -7,6 +7,7 @@ export default function Navbar() {
     return (
         <nav className="nav">
             <Link to="/">EuroDisney</Link>
+            <Link to="/dashboard">Home</Link>
             <Link to="/attractions">Attractions</Link>
             <Link to="/tickets">Tickets</Link>
             <Link to="/reservations">Reservations</Link>
