@@ -22,7 +22,7 @@ def create_ticket(ticket: TicketCreate, db: Session = Depends(get_db), payload: 
 @router.get("/", response_model=List[TicketOut])
 def get_tickets(db: Session = Depends(get_db), payload: dict = Depends(decode_access_token)):
     user_id = payload.get("user_id")
-    return db.query(Ticket).filter(Ticket.user_id == payload.get("user_id")).all()
+    return db.query(Ticket).filter(Ticket.user_id == user_id).all()
 
 # Get a specific ticket for the user
 @router.get("/{ticket_id}", response_model=TicketOut)
