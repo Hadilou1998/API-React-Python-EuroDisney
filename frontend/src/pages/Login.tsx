@@ -34,11 +34,8 @@ export default function Login() {
             console.log("Token:", res.access_token);
             console.log("User:", res.user);
 
-            // Message
-            setMsg(`Welcome ${res.user.name}! You are now logged in.`);
-
             // Redirect to the dashboard page
-            nav('/dashboard');
+            nav('/dashboard', { state: { msg: `Welcome ${res.user.name}! You are now logged in.` }});
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (e: any) {
