@@ -5,30 +5,28 @@ from app.core.config import settings
 from app.core.security import decode_access_token_raw
 from app.routers import users, attractions, tickets, employees, reservations
 
+# Logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
+# App
 app = FastAPI(
-    title = "EuroDisney API",
-    description = "API de gestion pour EuroDisney",
-    version = "1.0.0"
+    title="EuroDisney API",
+    description="API de gestion pour EuroDisney",
+    version="1.0.0"
 )
 
 # CORS
-if settings.BACKEND_CORS_ORIGINS:
-    origins = [o.strip() for o in settings.BACKEND_CORS_ORIGINS.split(",")]
-else:
-    origins = ["http://localhost:5173"]
-
+origins = ["http://localhost:5173"]  # frontend React
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_credentials=True,
+    allow_credentials=True,  # IMPORTANT pour avec credentials
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Middleware: logs + user
+# Middleware pour logs et JWT
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
     auth = request.headers.get("Authorization", "")
@@ -45,8 +43,7 @@ async def log_requests(request: Request, call_next):
     logger.info(f"Request: {request.method} {request.url.path} - Status: {response.status_code}")
     return response
 
-
-# Inclure les routers
+# Routers
 app.include_router(users.router, prefix="/auth", tags=["auth"])
 app.include_router(attractions.router, prefix="/attractions", tags=["attractions"])
 app.include_router(tickets.router, prefix="/tickets", tags=["tickets"])
