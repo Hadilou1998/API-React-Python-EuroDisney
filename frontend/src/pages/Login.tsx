@@ -1,17 +1,31 @@
 /* webhint-disable no-inline-styles */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import FormField from '../components/FormField';
 
 export default function Login() {
-    const { loginFn } = useAuth();
+    const { loginFn, user, token } = useAuth();
     const nav = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (user && token) {
+            // Debugging
+            console.log("=== Login Success ===");
+            console.log("Token:", token);
+            console.log("User:", user);
+
+            // Message
+            alert(`Welcome ${user.name}! You are now logged in.`);
+            // Redirect to the dashboard page
+            nav('/dashboard');
+        }
+    }, [user, token, nav]);
 
     const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -20,19 +34,7 @@ export default function Login() {
 
         try {
             // loginFn must return the response from the API
-            const res = await loginFn({ email, password });
-
-            // Debugging
-            console.log("=== Login Success ===");
-            console.log("Token:", res.access_token);
-            console.log("User:", res.user);
-
-            // Message
-            alert(`Welcome ${res.user.name}! You are now logged in.`);
-
-            // Redirect to the dashboard page
-            nav('/dashboard');
-
+            await loginFn({ email, password });
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (e: any) {
             setError(e?.response?.data?.detail ?? 'Connection failed');
