@@ -50,10 +50,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const loginFn = async (p: LoginPayload): Promise<LoginResponse> => {
         const res: LoginResponse = await login(p);
         localStorage.setItem("test", res.access_token);
-        localStorage.setItem("user", JSON.stringify(res.user));
         setToken(res.access_token);
-        setUser(res.user);
-        return res;
+
+        // Retrieve user to /me
+        const userRes = await fetch("/api/me", {
+            headers: { Authorization : `Bearer ${res.access_token}` }
+        }).then(r => r.json());
+
+        localStorage.setItem("user", JSON.stringify(userRes));
+        setUser(userRes);
+
+        return {...res, user: userRes }
     };
 
     // Fonction de logout
