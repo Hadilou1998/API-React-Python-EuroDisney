@@ -53,7 +53,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setToken(res.access_token);
 
         // Retrieve user to /me
-        const userRes = await fetch("/api/me", {
+        const userRes = await fetch("/me", {
             headers: { Authorization : `Bearer ${res.access_token}` }
         }).then(r => r.json());
 
