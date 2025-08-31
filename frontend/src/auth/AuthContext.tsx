@@ -43,27 +43,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Fonction de login
     const loginFn = async (p: LoginPayload): Promise<LoginResponse & { user: User }> => {
-        const res: LoginResponse = await login(p);
+        const res: LoginResponse & { user: User } = await login(p);
+
+        // stock token
         localStorage.setItem("test", res.access_token);
         setToken(res.access_token);
 
-        // Retrieve user to /me
-        const userRes = await fetch(`${import.meta.env.VITE_API_URL}/auth/me`, {
-            headers: { 
-                Authorization : `Bearer ${res.access_token}`,
-                "Content-Type": "application/json",
-            }
-        })
-        
-        if (!userRes.ok) {
-            throw new Error(`Failed to fetch user info: ${userRes.status}`);
-        }
+        // stock user
+        localStorage.setItem("user", JSON.stringify(res.user));
+        setUser(res.user);
 
-        const userData: User = await userRes.json();
-        localStorage.setItem("user", JSON.stringify(userData));
-        setUser(userData);
-
-        return {...res, user: userData }
+        return res;
     };
 
     // Fonction de logout
