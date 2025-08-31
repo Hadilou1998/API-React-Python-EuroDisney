@@ -5,7 +5,7 @@ import { login } from "../api/endpoints";
 type AuthCtx = {
     user: User | null;
     token: string | null;
-    loginFn: (p: LoginPayload) => Promise<LoginResponse>;
+    loginFn: (p: LoginPayload) => Promise<LoginResponse & { user: User }>;
     logout: () => void;
 };
 
@@ -33,7 +33,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setToken(storedToken);
         }
 
-        if (storedUser && storedUser !== "undefined" && storedUser !== "null") {
+        if (storedUser) {
             try {
                 const parsedUser = JSON.parse(storedUser);
                 setUser(parsedUser);
@@ -41,20 +41,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 console.warn("Failed to parse stored user:", e);
                 localStorage.removeItem("user");
             }
-        } else {
-            localStorage.removeItem("user"); // Nettoie si valeur corrompue
         }
     }, []);
 
     // Fonction de login
-    const loginFn = async (p: LoginPayload): Promise<LoginResponse> => {
+    const loginFn = async (p: LoginPayload): Promise<LoginResponse & { user: User }> => {
         const res: LoginResponse = await login(p);
         localStorage.setItem("test", res.access_token);
         setToken(res.access_token);
 
         // Retrieve user to /me
-        const userRes = await fetch("/auth/me", {
-            headers: { Authorization : `Bearer ${res.access_token}` }
+        const userRes = await fetch(`${import.meta.env.VITE_API_URL}/auth/me`, {
+            headers: { 
+                Authorization : `Bearer ${res.access_token}`,
+                "Content-Type": "application/json",
+            }
         }).then(r => r.json());
 
         localStorage.setItem("user", JSON.stringify(userRes));

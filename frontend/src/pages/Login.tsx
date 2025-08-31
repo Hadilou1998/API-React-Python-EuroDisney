@@ -1,31 +1,17 @@
 /* webhint-disable no-inline-styles */
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import FormField from '../components/FormField';
 
 export default function Login() {
-    const { loginFn, user, token } = useAuth();
+    const { loginFn } = useAuth();
     const nav = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-        if (user && token) {
-            // Debugging
-            console.log("=== Login Success ===");
-            console.log("Token:", token);
-            console.log("User:", user);
-
-            // Message
-            alert(`Welcome ${user.name}! You are now logged in.`);
-            // Redirect to the dashboard page
-            nav('/dashboard');
-        }
-    }, [user, token, nav]);
 
     const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -33,11 +19,32 @@ export default function Login() {
         setLoading(true);
 
         try {
-            // loginFn must return the response from the API
-            await loginFn({ email, password });
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (e: any) {
-            setError(e?.response?.data?.detail ?? 'Connection failed');
+            const res = await loginFn({ email, password });
+
+            if (!res || !res.access_token || !res.user) {
+                throw new Error("Invalid response from server");
+            }
+
+            // Debugging
+            console.log("=== Login Success ===");
+            console.log("Token:", res.access_token);
+            console.log("User:", res.user);
+
+            // Message
+            alert(`Welcome ${res.user.name}! You are now logged in.`);
+
+            // Redirect to dashboard
+            nav('/dashboard');
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (err: any) {
+            // Récupère erreur de ton backend si possible
+            if (err.response?.data?.detail) {
+                setError(err.response.data.detail);
+            } else if (err.message) {
+                setError(err.message);
+            } else {
+                setError('Connection failed');
+            }
         } finally {
             setLoading(false);
         }
