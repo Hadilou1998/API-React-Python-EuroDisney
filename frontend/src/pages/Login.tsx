@@ -25,14 +25,19 @@ export default function Login() {
             console.log("Token:", res.access_token);
             console.log("User:", res.user);
 
-            // Affichage message et redirection
+            // Message
             alert(`Welcome ${res.user.name}! You are now logged in.`);
-            nav('/dashboard'); // redirection vers la page d’accueil / dashboard
 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (err: any) {
+            // Redirect to dashboard
+            nav("/dashboard");
+        } catch (err) {
             console.error("Login failed:", err);
-            setError(err?.message || 'Connection failed');
+
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError("Connection failed");
+            }
         } finally {
             setLoading(false);
         }
