@@ -13,9 +13,14 @@ export default function Register() {
     const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setMsg(null);
-        await register({ name, email, password });
-        setMsg('Register success');
-        setTimeout(() => nav('/login'), 800);
+        try {
+            await register({ name, email, password });
+            setMsg('Register success');
+            setTimeout(() => nav('/login'), 800);
+        } catch (err) {
+            console.error(err);
+            setMsg('Error while registering, please try again later');
+        }
     };
 
     return (
