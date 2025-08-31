@@ -45,10 +45,10 @@ async def log_requests(request: Request, call_next):
 
 # Routers
 app.include_router(users.router, prefix="/auth", tags=["auth"])
-app.include_router(attractions.router, prefix="/attractions", tags=["attractions"])
-app.include_router(tickets.router, prefix="/tickets", tags=["tickets"])
-app.include_router(employees.router, prefix="/employees", tags=["employees"])
-app.include_router(reservations.router, prefix="/reservations", tags=["reservations"])
+app.include_router(attractions.router, prefix="/attractions")
+app.include_router(tickets.router, prefix="/tickets")
+app.include_router(employees.router, prefix="/employees")
+app.include_router(reservations.router, prefix="/reservations")
 
 @app.get("/")
 async def root():

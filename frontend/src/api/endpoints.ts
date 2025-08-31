@@ -34,22 +34,22 @@ export const getUserTickets = (userId: number) =>
     api.get<Ticket[]>(`/users/${userId}/tickets`, { withCredentials: true }).then(r => r.data);
 
 // === Attraction ===
-export const listAttractions = () => api.get<Attraction[]>(`${import.meta.env.VITE_API_URL}/attractions`, { withCredentials: true }).then(r => r.data);
-export const getAttraction = (id: number) => api.get<Attraction>(`${import.meta.env.VITE_API_URL}/attractions/${id}`, { withCredentials: true }).then(r => r.data);
-export const createAttraction = (p: CreateAttractionPayload) => api.post(`${import.meta.env.VITE_API_URL}/attractions/new`, p, { withCredentials: true }).then(r => r.data);
-export const updateAttraction = (id: number, p: UpdateAttractionPayload) => api.put(`${import.meta.env.VITE_API_URL}/attractions/${id}`, p, { withCredentials: true }).then(r => r.data);
-export const deleteAttraction = (id: number) => api.delete(`${import.meta.env.VITE_API_URL}/attractions/${id}`, { withCredentials: true }).then(r => r.data);
+export const listAttractions = () => api.get<Attraction[]>('/', { withCredentials: true }).then(r => r.data);
+export const getAttraction = (id: number) => api.get<Attraction>(`/${id}`, { withCredentials: true }).then(r => r.data);
+export const createAttraction = (p: CreateAttractionPayload) => api.post('/', p, { withCredentials: true }).then(r => r.data);
+export const updateAttraction = (id: number, p: UpdateAttractionPayload) => api.put(`/${id}`, p, { withCredentials: true }).then(r => r.data);
+export const deleteAttraction = (id: number) => api.delete(`/${id}`, { withCredentials: true }).then(r => r.data);
 
 // === Tickets ===
-export const listTickets = () => api.get<Ticket[]>(`${import.meta.env.VITE_API_URL}/tickets`, { withCredentials: true }).then(r => r.data);
-export const getTicket = (id: number) => api.get<Ticket>(`${import.meta.env.VITE_API_URL}/tickets/${id}`, { withCredentials: true }).then(r => r.data);
+export const listTickets = () => api.get<Ticket[]>('/', { withCredentials: true }).then(r => r.data);
+export const getTicket = (id: number) => api.get<Ticket>(`/${id}`, { withCredentials: true }).then(r => r.data);
 
 // === Employees ===
-export const listEmployees = () => api.get<Employee[]>(`${import.meta.env.VITE_API_URL}/employees`, { withCredentials: true }).then(r => r.data);
-export const getEmployee = (id: number) => api.get<Employee>(`${import.meta.env.VITE_API_URL}/employees/${id}`, { withCredentials: true }).then(r => r.data);
-export const createEmployee = (p: CreateEmployeePayload) => api.post(`${import.meta.env.VITE_API_URL}/employees`, p, { withCredentials: true }).then(r => r.data);
-export const updateEmployee = (id: number, p: UpdateEmployeePayload) => api.put(`${import.meta.env.VITE_API_URL}/employees/${id}`, p, { withCredentials: true }).then(r => r.data);
-export const deleteEmployee = (id: number) => api.delete(`${import.meta.env.VITE_API_URL}/employees/${id}`, { withCredentials: true }).then(r => r.data);
+export const listEmployees = () => api.get<Employee[]>('/', { withCredentials: true }).then(r => r.data);
+export const getEmployee = (id: number) => api.get<Employee>(`/${id}`, { withCredentials: true }).then(r => r.data);
+export const createEmployee = (p: CreateEmployeePayload) => api.post('/new', p, { withCredentials: true }).then(r => r.data);
+export const updateEmployee = (id: number, p: UpdateEmployeePayload) => api.put(`/${id}`, p, { withCredentials: true }).then(r => r.data);
+export const deleteEmployee = (id: number) => api.delete(`/${id}`, { withCredentials: true }).then(r => r.data);
 
 // === Reservations ===
-export const listReservations = () => api.get<Reservation[]>('/reservations', { withCredentials: true }).then(r => r.data);
+export const listReservations = () => api.get<Reservation[]>('/', { withCredentials: true }).then(r => r.data);
