@@ -38,7 +38,7 @@ export default function Login() {
             setMsg(`Welcome ${res.user.name}! You are now logged in.`);
 
             // Redirect to the dashboard page
-            nav('/attractions');
+            nav('/dashboard');
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (e: any) {
