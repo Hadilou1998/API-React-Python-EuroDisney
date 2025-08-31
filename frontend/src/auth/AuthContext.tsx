@@ -15,7 +15,7 @@ const Ctx = createContext<AuthCtx | null>(null);
 export const useAuth = () => {
     const ctx = useContext(Ctx);
     if (!ctx) {
-        throw new Error('useAuth must be used within an AuthProvider');
+        throw new Error("useAuth must be used within an AuthProvider");
     }
     return ctx;
 };
@@ -24,49 +24,50 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [token, setToken] = useState<string | null>(null);
 
+    // Charger les données depuis localStorage au démarrage
     useEffect(() => {
-        const storedToken = localStorage.getItem('test');
-        const storedUser = localStorage.getItem('user');
+        const storedToken = localStorage.getItem("test");
+        const storedUser = localStorage.getItem("user");
 
         if (storedToken) {
             setToken(storedToken);
         }
 
-        if (storedUser) {
+        if (storedUser && storedUser !== "undefined" && storedUser !== "null") {
             try {
-                setUser(JSON.parse(storedUser));
-            } catch (err) {
-                console.warn("Failed to parse stored user:", err);
-                setUser(null);
+                const parsedUser = JSON.parse(storedUser);
+                setUser(parsedUser);
+            } catch (e) {
+                console.warn("Failed to parse stored user:", e);
+                localStorage.removeItem("user");
             }
+        } else {
+            localStorage.removeItem("user"); // Nettoie si valeur corrompue
         }
     }, []);
 
+    // Fonction de login
     const loginFn = async (p: LoginPayload) => {
-        try {
-            const res: LoginResponse = await login(p);
-            localStorage.setItem('test', res.access_token);
-            localStorage.setItem('user', JSON.stringify(res.user));
-            setToken(res.access_token);
-            setUser(res.user);
-        } catch (err) {
-            console.error("Login failed:", err);
-            throw err;
-        }
+        const res: LoginResponse = await login(p);
+        localStorage.setItem("test", res.access_token);
+        localStorage.setItem("user", JSON.stringify(res.user));
+        setToken(res.access_token);
+        setUser(res.user);
     };
-    
+
+    // Fonction de logout
     const logout = () => {
-        localStorage.removeItem('test');
-        localStorage.removeItem('user');
+        localStorage.removeItem("test");
+        localStorage.removeItem("user");
         setToken(null);
         setUser(null);
     };
 
-    const value = useMemo(() => ({ user, token, loginFn, logout }), [user, token]);
-
-    return (
-        <Ctx.Provider value={value}>
-            {children}
-        </Ctx.Provider>
+    // Valeur du contexte
+    const value = useMemo(
+        () => ({ user, token, loginFn, logout }),
+        [user, token]
     );
-};
+
+    return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
+}
