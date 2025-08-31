@@ -10,7 +10,6 @@ from app.schemas.user import UserCreate, UserOut, UserUpdate
 from app.core.security import create_access_token, get_password_hash, verify_password
 from app.core.config import settings
 
-
 router = APIRouter()
 
 # Schema Oauth2
