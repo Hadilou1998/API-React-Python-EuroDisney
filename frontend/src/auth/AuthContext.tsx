@@ -35,8 +35,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         if (storedUser) {
             try {
-                const parsedUser = JSON.parse(storedUser);
-                setUser(parsedUser);
+                setUser(JSON.parse(storedUser));
             } catch (e) {
                 console.warn("Failed to parse stored user:", e);
                 localStorage.removeItem("user");
@@ -51,12 +50,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setToken(res.access_token);
 
         // Retrieve user to /me
-        const userRes = await fetch(`${import.meta.env.VITE_API_URL}/auth/me`, {
-            headers: { 
-                Authorization : `Bearer ${res.access_token}`,
-                "Content-Type": "application/json",
+        let userRes: User;
+        try {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/me`, {
+                headers: { 
+                    Authorization : `Bearer ${res.access_token}`,
+                    "Content-Type": "application/json",
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to fetch user info: ${response.status} ${response.statusText}`);
             }
-        }).then(r => r.json());
+
+            userRes = await response.json();
+        } catch (e) {
+            console.error("Error fetching user info:", e);
+            throw e;
+        }
 
         localStorage.setItem("user", JSON.stringify(userRes));
         setUser(userRes);
