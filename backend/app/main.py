@@ -18,8 +18,8 @@ app = FastAPI(
 if settings.BACKEND_CORS_ORIGINS:
     origins = [o.strip() for o in settings.BACKEND_CORS_ORIGINS.split(",")]
 else:
-    origins = []
-    
+    origins = ["http://localhost:5173"]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
