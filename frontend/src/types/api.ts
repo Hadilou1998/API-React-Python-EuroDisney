@@ -4,7 +4,12 @@ export interface User { id: number; name: string; email: string; role: Role };
 
 export interface LoginPayload { email: string; password: string };
 export interface RegisterPayload { name: string; email: string; password: string };
-export interface LoginResponse { access_token: string; token_type: 'bearer'; user: User };
+export interface LoginResponse { access_token: string; token_type: 'bearer'; user: {
+    id: number;
+    name: string;
+    email: string;
+    role: Role;
+}};
 
 export type AttractionStatus = 'open' | 'closed' | 'maintenance';
 export interface Attraction { id: number; name: string; description: string; capacity: number; status: AttractionStatus; };
