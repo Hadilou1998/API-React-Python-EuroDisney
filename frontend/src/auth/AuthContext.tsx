@@ -9,14 +9,15 @@ type AuthCtx = {
     logout: () => void;
 };
 
-const Ctx = createContext<AuthCtx | null>(null)
+const Ctx = createContext<AuthCtx | null>(null);
+
 // eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => {
-    const ctx = useContext(Ctx)
+    const ctx = useContext(Ctx);
     if (!ctx) {
         throw new Error('useAuth must be used within an AuthProvider');
     }
-    return ctx
+    return ctx;
 };
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -24,22 +25,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [token, setToken] = useState<string | null>(null);
 
     useEffect(() => {
-        const token = localStorage.getItem('test');
-        const user = localStorage.getItem('user');
-        if (token) {
-            setToken(token);
+        const storedToken = localStorage.getItem('test');
+        const storedUser = localStorage.getItem('user');
+
+        if (storedToken) {
+            setToken(storedToken);
         }
-        if (user) {
-            setUser(JSON.parse(user));
-        }        
+
+        if (storedUser) {
+            try {
+                setUser(JSON.parse(storedUser));
+            } catch (err) {
+                console.warn("Failed to parse stored user:", err);
+                setUser(null);
+            }
+        }
     }, []);
 
     const loginFn = async (p: LoginPayload) => {
-        const res: LoginResponse = await login(p)
-        localStorage.setItem('test', res.access_token);
-        localStorage.setItem('user', JSON.stringify(res.user));
-        setToken(res.access_token);
-        setUser(res.user);
+        try {
+            const res: LoginResponse = await login(p);
+            localStorage.setItem('test', res.access_token);
+            localStorage.setItem('user', JSON.stringify(res.user));
+            setToken(res.access_token);
+            setUser(res.user);
+        } catch (err) {
+            console.error("Login failed:", err);
+            throw err;
+        }
     };
     
     const logout = () => {
@@ -52,6 +65,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const value = useMemo(() => ({ user, token, loginFn, logout }), [user, token]);
 
     return (
-        <Ctx.Provider value={value}>{children}</Ctx.Provider>
+        <Ctx.Provider value={value}>
+            {children}
+        </Ctx.Provider>
     );
 };
