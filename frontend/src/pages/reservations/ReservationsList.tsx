@@ -1,9 +1,18 @@
 import { useQuery } from '@tanstack/react-query';
 import { listReservations } from '../../api/endpoints';
+import { useAuth } from '../../auth/AuthContext';
 
 export default function ReservationsList() {
-    const { data, isLoading } = useQuery({ queryKey: ['reservations'], queryFn: listReservations });
-    if (isLoading) return <p>Loading...</p>
+    const { token } = useAuth();
+
+    const { data, isLoading, error } = useQuery({ 
+        queryKey: ['reservations'], 
+        queryFn: () => listReservations(token!),
+        enabled: !!token,
+    });
+
+    if (isLoading) return <p>Loading...</p>;
+    if (error) return <p>Error</p>;
 
     // Protection if data is not a array
     const reservations = Array.isArray(data) ? data : [];

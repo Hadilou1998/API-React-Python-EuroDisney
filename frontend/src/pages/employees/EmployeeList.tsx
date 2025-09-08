@@ -1,15 +1,24 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { deleteEmployee, listEmployees } from '../../api/endpoints';
+import { useAuth } from '../../auth/AuthContext';
 
 export default function EmployeeList() {
     const nav = useNavigate();
     const queryClient = useQueryClient();
-    const { data, isLoading } = useQuery({ queryKey: ['employees'], queryFn: listEmployees });
-    const del = useMutation({
-        mutationFn: (id: number) => deleteEmployee(id),
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['employees'] })
+    const { token } = useAuth(); 
+    
+    const { data, isLoading } = useQuery({ 
+        queryKey: ['employees'], 
+        queryFn: () => listEmployees(token!), 
+        enabled: !!token,
     });
+    
+    const del = useMutation({
+        mutationFn: (id: number) => deleteEmployee(id, token!),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['employees'] }),
+    });
+
     if (isLoading) return <p>Loading...</p>;
 
     // Protection if data is not a array
