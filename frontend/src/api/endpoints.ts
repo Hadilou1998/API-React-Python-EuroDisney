@@ -29,27 +29,32 @@ export const login = (p: LoginPayload) => {
 export const register = (p: RegisterPayload) =>
     api.post('/auth/register', p, { withCredentials: true }).then(r => r.data);
 
+// === Helper for add token ===
+const authHeader = (token?: string) => ({
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+});
+
 // === Users ===
-export const getUserTickets = (userId: number) =>
-    api.get<Ticket[]>(`/users/${userId}/tickets`, { withCredentials: true }).then(r => r.data);
+export const getUserTickets = (userId: number, token: string) =>
+    api.get<Ticket[]>(`/users/${userId}/tickets`, { headers: authHeader(token), withCredentials: true }).then(r => r.data);
 
 // === Attraction ===
 export const listAttractions = () => api.get<Attraction[]>('/attractions/', { withCredentials: true }).then(r => r.data);
 export const getAttraction = (id: number) => api.get<Attraction>(`/attractions/${id}`, { withCredentials: true }).then(r => r.data);
-export const createAttraction = (p: CreateAttractionPayload) => api.post('/attractions/new', p, { withCredentials: true }).then(r => r.data);
-export const updateAttraction = (id: number, p: UpdateAttractionPayload) => api.put(`/attractions/${id}`, p, { withCredentials: true }).then(r => r.data);
-export const deleteAttraction = (id: number) => api.delete(`/attractions/${id}`, { withCredentials: true }).then(r => r.data);
+export const createAttraction = (p: CreateAttractionPayload, token: string) => api.post('/attractions/new', p, { headers: authHeader(token), withCredentials: true }).then(r => r.data);
+export const updateAttraction = (id: number, p: UpdateAttractionPayload, token: string) => api.put(`/attractions/${id}`, p, { headers: authHeader(token), withCredentials: true }).then(r => r.data);
+export const deleteAttraction = (id: number, token: string) => api.delete(`/attractions/${id}`, { headers: authHeader(token), withCredentials: true }).then(r => r.data);
 
 // === Tickets ===
-export const listTickets = () => api.get<Ticket[]>('/tickets/', { withCredentials: true }).then(r => r.data);
-export const getTicket = (id: number) => api.get<Ticket>(`/tickets/${id}`, { withCredentials: true }).then(r => r.data);
+export const listTickets = (token: string) => api.get<Ticket[]>('/tickets/', { headers: authHeader(token), withCredentials: true }).then(r => r.data);
+export const getTicket = (id: number, token: string) => api.get<Ticket>(`/tickets/${id}`, { headers: authHeader(token), withCredentials: true }).then(r => r.data);
 
 // === Employees ===
-export const listEmployees = () => api.get<Employee[]>('/employees/', { withCredentials: true }).then(r => r.data);
-export const getEmployee = (id: number) => api.get<Employee>(`/employees/${id}`, { withCredentials: true }).then(r => r.data);
-export const createEmployee = (p: CreateEmployeePayload) => api.post('/employees/new', p, { withCredentials: true }).then(r => r.data);
-export const updateEmployee = (id: number, p: UpdateEmployeePayload) => api.put(`/employees/${id}`, p, { withCredentials: true }).then(r => r.data);
-export const deleteEmployee = (id: number) => api.delete(`/employees/${id}`, { withCredentials: true }).then(r => r.data);
+export const listEmployees = (token: string) => api.get<Employee[]>('/employees/', { headers: authHeader(token), withCredentials: true }).then(r => r.data);
+export const getEmployee = (id: number, token: string) => api.get<Employee>(`/employees/${id}`, { headers: authHeader(token), withCredentials: true }).then(r => r.data);
+export const createEmployee = (p: CreateEmployeePayload, token: string) => api.post('/employees/new', p, { headers: authHeader(token), withCredentials: true }).then(r => r.data);
+export const updateEmployee = (id: number, p: UpdateEmployeePayload, token: string) => api.put(`/employees/${id}`, p, { headers: authHeader(token), withCredentials: true }).then(r => r.data);
+export const deleteEmployee = (id: number, token: string) => api.delete(`/employees/${id}`, { headers: authHeader(token), withCredentials: true }).then(r => r.data);
 
 // === Reservations ===
-export const listReservations = () => api.get<Reservation[]>('/reservations/', { withCredentials: true }).then(r => r.data);
+export const listReservations = (token: string) => api.get<Reservation[]>('/reservations/', { headers: authHeader(token), withCredentials: true }).then(r => r.data);

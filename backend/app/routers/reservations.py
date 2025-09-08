@@ -9,7 +9,7 @@ from app.schemas.reservation import ReservationCreate, ReservationUpdate, Reserv
 router = APIRouter()
 
 # Create a new reservation
-@router.post("/", response_model=ReservationOut)
+@router.post("/new", response_model=ReservationOut)
 def create_reservation(reservation: ReservationCreate, db: Session = Depends(get_db), payload: dict = Depends(decode_access_token)):
     user_id = payload.get("user_id")
     new_reservation = Reservation(**reservation.dict(), user_id=user_id)

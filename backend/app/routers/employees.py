@@ -9,7 +9,7 @@ from typing import List
 router = APIRouter()
 
 # Admin only create new employee
-@router.post("/", response_model=EmployeeOut, dependencies=[Depends(require_role("admin"))])
+@router.post("/new", response_model=EmployeeOut, dependencies=[Depends(require_role("admin"))])
 def create_employee(employee: EmployeeCreate, db: Session = Depends(get_db)):
     new_employee = Employee(**employee.dict())
     db.add(new_employee)
