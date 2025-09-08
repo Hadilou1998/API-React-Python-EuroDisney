@@ -15,7 +15,7 @@ def create_employee(employee: EmployeeCreate, db: Session = Depends(get_db)):
     db.add(new_employee)
     db.commit()
     db.refresh(new_employee)
-    return {"message": "Employee created successfully"}
+    return new_employee
 
 # Admin only read all employees
 @router.get("/", response_model=List[EmployeeOut], dependencies=[Depends(require_role("admin"))])
