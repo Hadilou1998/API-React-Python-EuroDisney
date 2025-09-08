@@ -6,10 +6,15 @@ import { useAuth } from '../../auth/AuthContext';
 export default function AttractionsList() {
     const queryClient = useQueryClient();
     const nav = useNavigate();
-    const { user } = useAuth();
-    const { data, isLoading, error } = useQuery({ queryKey:['attractions'], queryFn: listAttractions });
+    const { user, token } = useAuth();
+
+    const { data, isLoading, error } = useQuery({ 
+        queryKey:['attractions'],
+        queryFn: () => listAttractions(),
+    });
+
     const del = useMutation({
-        mutationFn: (id: number) => deleteAttraction(id),
+        mutationFn: (id: number) => deleteAttraction(id, token!),
         onSuccess: () => queryClient.invalidateQueries({ queryKey: ['attractions'] })
     });
 
