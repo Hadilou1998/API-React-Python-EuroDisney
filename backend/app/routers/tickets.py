@@ -4,7 +4,7 @@ from app.core.database import get_db
 from app.core.security import decode_access_token, require_role
 from app.models.ticket import Ticket
 from app.schemas.ticket import TicketCreate, TicketUpdate, TicketOut
-from typing import List
+from typing import List, Optional
 
 router = APIRouter()
 
