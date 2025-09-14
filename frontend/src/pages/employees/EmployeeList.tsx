@@ -27,7 +27,7 @@ export default function EmployeeList() {
     return (
         <>
             <h2>Employees</h2>
-            <button className="btn primary" onClick={() => nav('/employees/new')}>Add</button>
+            <button className="btn primary" onClick={() => nav('/new')}>Add</button>
             <table className="table">
                 <thead>
                     <tr>
