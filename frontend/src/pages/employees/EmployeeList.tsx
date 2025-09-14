@@ -8,18 +8,19 @@ export default function EmployeeList() {
     const queryClient = useQueryClient();
     const { token } = useAuth(); 
     
-    const { data, isLoading } = useQuery({ 
+    const { data, isLoading, error } = useQuery({ 
         queryKey: ['employees'], 
-        queryFn: () => listEmployees(token!), 
+        queryFn: () => listEmployees(token || ""), 
         enabled: !!token,
     });
     
     const del = useMutation({
-        mutationFn: (id: number) => deleteEmployee(id, token!),
+        mutationFn: (id: number) => deleteEmployee(id, token || ""),
         onSuccess: () => queryClient.invalidateQueries({ queryKey: ['employees'] }),
     });
 
     if (isLoading) return <p>Loading...</p>;
+    if (error) return <p>Error: {error.message}</p>;
 
     // Protection if data is not a array
     const employees = Array.isArray(data) ? data : [];
@@ -27,7 +28,7 @@ export default function EmployeeList() {
     return (
         <>
             <h2>Employees</h2>
-            <button className="btn primary" onClick={() => nav('/new')}>Add</button>
+            <button className="btn primary" onClick={() => nav('/employees/new')}>Add</button>
             <table className="table">
                 <thead>
                     <tr>
