@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.core.database import get_db
-from app.core.security import decode_access_token, require_role
+from app.core.security import require_role
 from app.models.employee import Employee
 from app.schemas.employee import EmployeeCreate, EmployeeUpdate, EmployeeOut
 from typing import List, Optional
@@ -19,11 +19,8 @@ def create_employee(employee: EmployeeCreate, db: Session = Depends(get_db)):
 
 # Admin only get all employees
 @router.get("/", response_model=List[EmployeeOut], dependencies=[Depends(require_role("admin"))])
-def get_employees(db: Session = Depends(get_db), payload: Optional[dict] = Depends(lambda: decode_access_token(optional=True))):
-    if payload and payload.get("role") == "admin":
-        return db.query(Employee).all()
-    # if no payload, return all employees
-    return db.query(Employee).filter(Employee.role == "user").all()
+def get_employees(db: Session = Depends(get_db)):
+    return db.query(Employee).all()
 
 # Admin only get employee by id
 @router.get("/{employee_id}", response_model=EmployeeOut, dependencies=[Depends(require_role("admin"))])
@@ -39,9 +36,10 @@ def update_employee(employee_id: int, employee: EmployeeUpdate, db: Session = De
     db_employee = db.query(Employee).filter(Employee.id == employee_id).first()
     if not db_employee:
         raise HTTPException(status_code=404, detail="Employee not found")
-    for key, value in employee.dict().items():
+    
+    for key, value in employee.dict(exclude_unset=True).items():
         setattr(db_employee, key, value)
-    db.add(db_employee)
+
     db.commit()
     db.refresh(db_employee)
     return db_employee

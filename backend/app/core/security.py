@@ -11,7 +11,7 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 # Password utils
 def verify_password(plain_password, hashed_password):
@@ -35,16 +35,16 @@ def decode_access_token(token: str = Depends(oauth2_scheme)) -> Dict:
     except JWTError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token", headers={"WWW-Authenticate": "Bearer"},)
 
-# Simple decoding without throwing an error (used for GET public)
+# Optional decoding (return None if invalid or absent token)
 def decode_access_token_optional(authorization: Optional[str] = Header(None)) -> Dict:
     if not authorization or not authorization.startswith("Bearer "):
-        return {}
+        return None
     token = authorization.split(" ")[1]
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
     except JWTError:
-        return {}
+        return None
 
 # Role verification (used for POST, PUT, DELETE)
 def require_role(role: str):

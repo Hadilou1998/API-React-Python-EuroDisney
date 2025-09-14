@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.core.database import get_db
-from app.core.security import decode_access_token, require_role
+from app.core.security import decode_access_token, decode_access_token_optional, require_role
 from app.models.ticket import Ticket
 from app.schemas.ticket import TicketCreate, TicketUpdate, TicketOut
 from typing import List, Optional
@@ -20,7 +20,7 @@ def create_ticket(ticket: TicketCreate, db: Session = Depends(get_db), payload: 
 
 # List all tickets for the user
 @router.get("/", response_model=List[TicketOut])
-def get_tickets(db: Session = Depends(get_db), payload: Optional[dict] = Depends(lambda: decode_access_token(optional=True))):
+def get_tickets(db: Session = Depends(get_db), payload: Optional[dict] = Depends(decode_access_token_optional)):
     if payload:
         user_id = payload.get("user_id")
         return db.query(Ticket).filter(Ticket.user_id == user_id).all()

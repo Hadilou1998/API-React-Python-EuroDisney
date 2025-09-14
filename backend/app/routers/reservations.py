@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from app.core.database import get_db
-from app.core.security import decode_access_token, require_role
+from app.core.security import decode_access_token, decode_access_token_optional, require_role
 from app.models.reservation import Reservation
 from app.schemas.reservation import ReservationCreate, ReservationUpdate, ReservationOut
 
@@ -18,14 +18,16 @@ def create_reservation(reservation: ReservationCreate, db: Session = Depends(get
     db.refresh(new_reservation)
     return new_reservation
 
-# Get all reservations
+# User see all his reservations / admin see all reservations
 @router.get("/", response_model=List[ReservationOut])
-def list_reservations(db: Session = Depends(get_db), payload: Optional[dict] = Depends(lambda: decode_access_token(optional=True))):
-    if payload:
+def list_reservations(db: Session = Depends(get_db), payload: Optional[dict] = Depends(decode_access_token_optional)):
+    if payload and payload.get("role") == "admin":
+        return db.query(Reservation).all()
+    elif payload and "user_id" in payload:
         user_id = payload.get("user_id")
-        return db.query(Reservation).filter(Reservation.user_id == user_id).all()
-    # if no payload, return all reservations
-    return db.query(Reservation).all()
+        return db.query(Reservation).filter(Reservation.user_id == payload["user_id"]).all()
+    # if no payload, return []
+    return []
 
 # Get a reservation by id
 @router.get("/{reservation_id}", response_model=ReservationOut)

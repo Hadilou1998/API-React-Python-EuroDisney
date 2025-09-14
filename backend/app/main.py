@@ -21,6 +21,7 @@ origins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173"
 ]  # frontend React
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -34,13 +35,13 @@ app.add_middleware(
 async def log_requests(request: Request, call_next):
     auth = request.headers.get("Authorization", "")
     user = {"sub": "anonymous", "role": "guest"}
+
     if auth.startswith("Bearer "):
         token = auth.split(" ")[1]
-        try:
-            payload = decode_access_token_optional(token)
+        payload = decode_access_token_optional(token)
+        if payload:
             user = {"sub": payload.get("sub"), "role": payload.get("role")}
-        except Exception as e:
-            logger.warning(f"Invalid token: {e}")
+
     logger.info(f"Request: {request.method} {request.url.path} - User: {user['sub']} - Role: {user['role']}")
     response = await call_next(request)
     logger.info(f"Request: {request.method} {request.url.path} - Status: {response.status_code}")
