@@ -1,10 +1,19 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { listTickets } from '../../api/endpoints';
+import { useAuth } from '../../auth/AuthContext';
 
 export default function TicketsList() {
-    const { data, isLoading } = useQuery({ queryKey: ['tickets'], queryFn: listTickets });
+    const { token } = useAuth();
+
+    const { data, isLoading, error } = useQuery({ 
+        queryKey: ['tickets'], 
+        queryFn: () => listTickets(token || ""),
+        enabled: !!token,
+    });
+    
     if (isLoading) return <p>Loading...</p>
+    if (error) return <p>Error: {error.message}</p>
 
     // Protection if data is not a array
     const tickets = Array.isArray(data) ? data : [];

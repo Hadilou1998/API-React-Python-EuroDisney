@@ -31,4 +31,4 @@ class ReservationOut(ReservationBase):
     status: ReservationStatus
 
     class Config:
-        from_attributes = True
+        orm_mode = True

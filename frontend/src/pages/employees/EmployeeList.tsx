@@ -8,7 +8,7 @@ export default function EmployeeList() {
     const queryClient = useQueryClient();
     const { token } = useAuth(); 
     
-    const { data, isLoading, error } = useQuery({ 
+    const { data, isLoading } = useQuery({ 
         queryKey: ['employees'], 
         queryFn: () => listEmployees(token || ""), 
         enabled: !!token,
@@ -20,7 +20,6 @@ export default function EmployeeList() {
     });
 
     if (isLoading) return <p>Loading...</p>;
-    if (error) return <p>Error: {error.message}</p>;
 
     // Protection if data is not a array
     const employees = Array.isArray(data) ? data : [];

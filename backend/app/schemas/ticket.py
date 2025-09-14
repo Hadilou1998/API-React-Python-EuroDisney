@@ -20,4 +20,4 @@ class TicketOut(TicketBase):
     status: str
 
     class Config:
-        from_attributes = True
+        orm_mode = True
