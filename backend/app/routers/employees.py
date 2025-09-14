@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.core.database import get_db
-from app.core.security import require_role
+from app.core.security import decode_access_token, require_role
 from app.models.employee import Employee
 from app.schemas.employee import EmployeeCreate, EmployeeUpdate, EmployeeOut
-from typing import List
+from typing import List, Optional
 
 router = APIRouter()
 
@@ -17,15 +17,17 @@ def create_employee(employee: EmployeeCreate, db: Session = Depends(get_db)):
     db.refresh(new_employee)
     return new_employee
 
-# Admin only read all employees
+# Admin only get all employees
 @router.get("/", response_model=List[EmployeeOut], dependencies=[Depends(require_role("admin"))])
-def read_employees(db: Session = Depends(get_db)):
-    employees = db.query(Employee).all()
-    return employees
+def get_employees(db: Session = Depends(get_db), payload: Optional[dict] = Depends(lambda: decode_access_token(optional=True))):
+    if payload and payload.get("role") == "admin":
+        return db.query(Employee).all()
+    # if no payload, return all employees
+    return db.query(Employee).filter(Employee.role == "user").all()
 
-# Admin only read employee by id
+# Admin only get employee by id
 @router.get("/{employee_id}", response_model=EmployeeOut, dependencies=[Depends(require_role("admin"))])
-def read_employee(employee_id: int, db: Session = Depends(get_db)):
+def get_employee(employee_id: int, db: Session = Depends(get_db)):
     employee = db.query(Employee).filter(Employee.id == employee_id).first()
     if not employee:
         raise HTTPException(status_code=404, detail="Employee not found")

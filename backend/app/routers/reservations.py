@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 from app.core.database import get_db
 from app.core.security import decode_access_token, require_role
 from app.models.reservation import Reservation
@@ -20,9 +20,12 @@ def create_reservation(reservation: ReservationCreate, db: Session = Depends(get
 
 # Get all reservations
 @router.get("/", response_model=List[ReservationOut])
-def list_reservations(db: Session = Depends(get_db), payload: dict = Depends(decode_access_token)):
-    user_id = payload.get("user_id")
-    return db.query(Reservation).filter(Reservation.user_id == user_id).all()
+def list_reservations(db: Session = Depends(get_db), payload: Optional[dict] = Depends(lambda: decode_access_token(optional=True))):
+    if payload:
+        user_id = payload.get("user_id")
+        return db.query(Reservation).filter(Reservation.user_id == user_id).all()
+    # if no payload, return all reservations
+    return db.query(Reservation).all()
 
 # Get a reservation by id
 @router.get("/{reservation_id}", response_model=ReservationOut)
