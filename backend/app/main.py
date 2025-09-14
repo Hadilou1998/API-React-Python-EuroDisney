@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 import logging
 from app.core.config import settings
-from app.core.security import decode_access_token_raw
+from app.core.security import decode_access_token_optional
 from app.routers import users, attractions, tickets, employees, reservations
 
 # Logging
@@ -37,7 +37,7 @@ async def log_requests(request: Request, call_next):
     if auth.startswith("Bearer "):
         token = auth.split(" ")[1]
         try:
-            payload = decode_access_token_raw(token)
+            payload = decode_access_token_optional(token)
             user = {"sub": payload.get("sub"), "role": payload.get("role")}
         except Exception as e:
             logger.warning(f"Invalid token: {e}")
