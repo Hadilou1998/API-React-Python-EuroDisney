@@ -17,8 +17,8 @@ def create_employee(employee: EmployeeCreate, db: Session = Depends(get_db)):
     db.refresh(new_employee)
     return new_employee
 
-# Admin only get all employees
-@router.get("/", response_model=List[EmployeeOut], dependencies=[Depends(require_role("admin"))])
+# Get all employees
+@router.get("/", response_model=List[EmployeeOut])
 def get_employees(db: Session = Depends(get_db), payload: Optional[dict] = Depends(decode_access_token_optional)):
     if payload and payload.get("role") == "admin":
         return db.query(Employee).all()
