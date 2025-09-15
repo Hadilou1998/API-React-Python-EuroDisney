@@ -7,7 +7,7 @@ from jose import JWTError, jwt
 from app.core.database import get_db
 from app.models.user import User
 from app.schemas.user import UserCreate, UserOut, UserUpdate
-from app.core.security import create_access_token, get_password_hash, verify_password
+from app.core.security import create_access_token, get_password_hash, verify_password, decode_access_token
 from app.core.config import settings
 
 router = APIRouter()
@@ -60,8 +60,12 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     return user
 
 @router.get("/me", response_model=UserOut)
-def read_users_me(current_user: User = Depends(get_current_user)):
-    return current_user
+def read_users_me(db: Session = Depends(get_db), payload: dict = Depends(decode_access_token)):
+    user_id = payload.get("user_id")
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    return user
 
 @router.get("/users", response_model=List[UserOut])
 
