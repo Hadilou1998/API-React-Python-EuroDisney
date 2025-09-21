@@ -22,63 +22,48 @@ def seed():
     # seed users
     # -----------------------------
     users = [
+        # Admin
         User(name="admin", email="admin@disney.com", password=get_password_hash("admin123"), role="admin"),
-        User(name="employee", email="employee@disney.com", password=get_password_hash("employee123"), role="employee"),
-        User(name="user", email="user@disney.com", password=get_password_hash("user123"), role="user"),
-        User(name="Hadil", email="hadil@disney.com", password=get_password_hash("hadil123"), role="user"),
-        User(name="John", email="john@disney.com", password=get_password_hash("john123"), role="user"),
-        User(name="Sarah", email="sarah@disney.com", password=get_password_hash("sarah123"), role="user"),
-        User(name="Tom", email="tom@disney.com", password=get_password_hash("tom123"), role="user"),
-        User(name="Alice", email="alice@disney.com", password=get_password_hash("alice123"), role="user"),
-        User(name="Bob", email="bob@disney.com", password=get_password_hash("bob123"), role="user"),
-        User(name="Charlie", email="charlie@disney.com", password=get_password_hash("charlie123"), role="user"),
-        User(name="David", email="david@disney.com", password=get_password_hash("david123"), role="user"), 
-        User(name="Eve", email="eve@disney.com", password=get_password_hash("eve123"), role="user"),
-        User(name="Frank", email="frank@disney.com", password=get_password_hash("frank123"), role="user"),
-        User(name="Grace", email="grace@disney.com", password=get_password_hash("grace123"), role="user"),
-        User(name="Henry", email="henry@disney.com", password=get_password_hash("henry123"), role="user"),
-        User(name="Isabelle", email="isabelle@disney.com", password=get_password_hash("isabelle123"), role="user"),
-        User(name="Jessica", email="jessica@disney.com", password=get_password_hash("jessica123"), role="user"),
-        User(name="Karen", email="karen@disney.com", password=get_password_hash("karen123"), role="user"),
-        User(name="Lisa", email="lisa@disney.com", password=get_password_hash("lisa123"), role="user"),
-        User(name="Maggie", email="maggie@disney.com", password=get_password_hash("maggie123"), role="user"),
-        User(name="Nancy", email="nancy@disney.com", password=get_password_hash("nancy123"), role="user"),
-        User(name="Oscar", email="oscar@disney.com", password=get_password_hash("oscar123"), role="user"),
-        User(name="Peter", email="peter@disney.com", password=get_password_hash("peter123"), role="user"),
-        User(name="Quincy", email="quincy@disney.com", password=get_password_hash("quincy123"), role="user"),
-        User(name="Rachel", email="rachel@disney.com", password=get_password_hash("rachel123"), role="user"),
-        User(name="Steve", email="steve@disney.com", password=get_password_hash("steve123"), role="user"),
+
+        # Employees
+        User(name="Mickey Mouse", email="mickey@disney.com", password=get_password_hash("employee123"), role="employee"),
+        User(name="Minnie Mouse", email="minnie@disney.com", password=get_password_hash("employee123"), role="employee"),
+        User(name="Donald Duck", email="donald@disney.com", password=get_password_hash("employee123"), role="employee"),
+        User(name="Pluto", email="pluto@disney.com", password=get_password_hash("employee123"), role="employee"),
+        User(name="Goofy", email="goofy@disney.com", password=get_password_hash("employee123"), role="employee"),
+
+        # Users
+        User(name="Hadil", email="hadil@disney.com", password=get_password_hash("user123"), role="user"),
+        User(name="John", email="john@disney.com", password=get_password_hash("user123"), role="user"),
+        User(name="Sarah", email="sarah@disney.com", password=get_password_hash("user123"), role="user"),
+        User(name="Tom", email="tom@disney.com", password=get_password_hash("user123"), role="user"),
+        User(name="Alice", email="alice@disney.com", password=get_password_hash("user123"), role="user"),
+        User(name="Bob", email="bob@disney.com", password=get_password_hash("user123"), role="user"),
+        User(name="Charlie", email="charlie@disney.com", password=get_password_hash("user123"), role="user"),
+        User(name="David", email="david@disney.com", password=get_password_hash("user123"), role="user"), 
+        User(name="Eve", email="eve@disney.com", password=get_password_hash("user123"), role="user"),
+        User(name="Frank", email="frank@disney.com", password=get_password_hash("user123"), role="user"),
+        User(name="Grace", email="grace@disney.com", password=get_password_hash("user123"), role="user"),
+        User(name="Henry", email="henry@disney.com", password=get_password_hash("user123"), role="user"),
+        User(name="Isabelle", email="isabelle@disney.com", password=get_password_hash("user123"), role="user"),
+        User(name="Jessica", email="jessica@disney.com", password=get_password_hash("user123"), role="user"),
+        User(name="Karen", email="karen@disney.com", password=get_password_hash("user123"), role="user"),
+        User(name="Lisa", email="lisa@disney.com", password=get_password_hash("user123"), role="user"),
+        User(name="Maggie", email="maggie@disney.com", password=get_password_hash("user123"), role="user"),
+        User(name="Nancy", email="nancy@disney.com", password=get_password_hash("user123"), role="user"),
+        User(name="Oscar", email="oscar@disney.com", password=get_password_hash("user123"), role="user"),
+        User(name="Peter", email="peter@disney.com", password=get_password_hash("user123"), role="user"),
+        User(name="Quincy", email="quincy@disney.com", password=get_password_hash("user123"), role="user"),
+        User(name="Rachel", email="rachel@disney.com", password=get_password_hash("user123"), role="user"),
+        User(name="Steve", email="steve@disney.com", password=get_password_hash("user123"), role="user"),
     ]
     db.add_all(users)
     db.commit()
 
     # Retrieve reel IDs
     admin_id = users[0].id
-    employee_id = users[1].id
-    user_id = users[2].id
-    hadil_id = users[3].id
-    john_id = users[4].id
-    sarah_id = users[5].id
-    tom_id = users[6].id
-    alice_id = users[7].id
-    bob_id = users[8].id
-    charlie_id = users[9].id
-    david_id = users[10].id
-    eve_id = users[11].id
-    frank_id = users[12].id
-    grace_id = users[13].id
-    henry_id = users[14].id
-    isabelle_id = users[15].id
-    jessica_id = users[16].id
-    karen_id = users[17].id
-    lisa_id = users[18].id
-    maggie_id = users[19].id
-    nancy_id = users[20].id
-    oscar_id = users[21].id
-    peter_id = users[22].id
-    quincy_id = users[23].id
-    rachel_id = users[24].id
-    steve_id = users[25].id
+    employee_ids = [users[1].id, users[2].id, users[3].id, users[4].id, users[5].id]
+    user_ids = [users.id for users in db.query(User).filter(User.role == "user").all()]
 
     # -----------------------------
     # seed attractions
@@ -96,37 +81,31 @@ def seed():
     db.commit()
 
     # Retrieve real IDs
-    space_mountain_id = attractions[0].id
-    pirates_of_the_caribbean_id = attractions[1].id
-    its_a_small_world_id = attractions[2].id
-    big_thunder_mountain_id = attractions[3].id
-    phantom_manor_id = attractions[4].id
-    frozen_yogurt_id = attractions[5].id
+    attraction_ids = [attr.id for attr in attractions]
 
     # -----------------------------
     # seed tickets
     # -----------------------------
 
-    tickets = [
-        Ticket(user_id=user_id, attraction_id=space_mountain_id, date=datetime(2025, 10, 5, 10, 0), qr_code="QR123456"),
-        Ticket(user_id=hadil_id, attraction_id=space_mountain_id, date=datetime(2025, 10, 5, 11, 0), qr_code="QR234567"),
-        Ticket(user_id=john_id, attraction_id=space_mountain_id, date=datetime(2025, 10, 5, 12, 0), qr_code="QR345678"),
-        Ticket(user_id=sarah_id, attraction_id=pirates_of_the_caribbean_id, date=datetime(2025, 10, 6, 13, 0), qr_code="QR456789"),
-        Ticket(user_id=tom_id, attraction_id=pirates_of_the_caribbean_id, date=datetime(2025, 10, 6, 14, 0), qr_code="QR567890"),
-        Ticket(user_id=alice_id, attraction_id=pirates_of_the_caribbean_id, date=datetime(2025, 10, 6, 15, 0), qr_code="QR678901"),
-        Ticket(user_id=bob_id, attraction_id=its_a_small_world_id, date=datetime(2025, 10, 7, 16, 0), qr_code="QR789012"),
-        Ticket(user_id=charlie_id, attraction_id=its_a_small_world_id, date=datetime(2025, 10, 7, 17, 0), qr_code="QR890123"),
-        Ticket(user_id=david_id, attraction_id=its_a_small_world_id, date=datetime(2025, 10, 7, 18, 0), qr_code="QR901234"),
-        Ticket(user_id=eve_id, attraction_id=big_thunder_mountain_id, date=datetime(2025, 10, 8, 19, 0), qr_code="QR012345"),
-        Ticket(user_id=frank_id, attraction_id=big_thunder_mountain_id, date=datetime(2025, 10, 8, 20, 0), qr_code="QR123456"),
-        Ticket(user_id=grace_id, attraction_id=big_thunder_mountain_id, date=datetime(2025, 10, 8, 21, 0), qr_code="QR234567"),
-        Ticket(user_id=henry_id, attraction_id=phantom_manor_id, date=datetime(2025, 10, 9, 22, 0), qr_code="QR345678"),
-        Ticket(user_id=isabelle_id, attraction_id=phantom_manor_id, date=datetime(2025, 10, 9, 23, 0), qr_code="QR456789"),
-        Ticket(user_id=jessica_id, attraction_id=phantom_manor_id, date=datetime(2025, 10, 10, 0, 0), qr_code="QR567890"),
-        Ticket(user_id=karen_id, attraction_id=frozen_yogurt_id, date=datetime(2025, 10, 11, 1, 0), qr_code="QR678901"),
-        Ticket(user_id=lisa_id, attraction_id=frozen_yogurt_id, date=datetime(2025, 10, 11, 2, 0), qr_code="QR789012"),
-        Ticket(user_id=maggie_id, attraction_id=frozen_yogurt_id, date=datetime(2025, 10, 11, 3, 0), qr_code="QR890123"),
-    ]
+    tickets = []
+    base_date = datetime(2025, 12, 6)
+
+    # Generate tickets for a lot of days
+    for day_offset in range(7):
+        current_date = datetime(base_date.year, base_date.month, base_date.day + day_offset)
+
+        # A lot of timeslots for each day
+        for hour in [9, 11, 14, 16, 19]:
+            ticket_date = current_date.replace(hour=hour, minute=0, second=0)
+
+            # A lot of tickets for each timeslot
+            for i in range(min(5, len(user_ids))):
+                user_id = user_ids[i % len(user_ids)]
+                attraction_id = attraction_ids[i % len(attraction_ids)]
+                qr_code = f"QR{day_offset}{hour}{i:02d}{attraction_id}"
+
+                tickets.append(Ticket(user_id=user_id, attraction_id=attraction_id, date=ticket_date, qr_code=qr_code))
+
     db.add_all(tickets)
     db.commit()
 
@@ -134,17 +113,33 @@ def seed():
     # seed reservations
     # -----------------------------
 
-    reservations = [
-        Reservation(user_id=user_id, resource_type="Agrabah Cafe Restaurant", date=datetime(2025, 10, 5, 10, 0), nb_persons=2, status=ReservationStatus.confirmed),
-        Reservation(user_id=hadil_id, resource_type="Alice and the Queen of Hearts : Return in Wonderland", date=datetime(2025, 10, 5, 11, 0), nb_persons=4, status=ReservationStatus.pending),
-        Reservation(user_id=john_id, resource_type="Annette's Diner", date=datetime(2025, 10, 5, 12, 0), nb_persons=2, status=ReservationStatus.cancelled),
-        Reservation(user_id=sarah_id, resource_type="Animation Academy", date=datetime(2025, 10, 6, 13, 0), nb_persons=2, status=ReservationStatus.confirmed),
-        Reservation(user_id=tom_id, resource_type="At the Puppet Chalet", date=datetime(2025, 10, 6, 14, 0), nb_persons=4, status=ReservationStatus.pending),
-        Reservation(user_id=alice_id, resource_type="Heroic Ceremony", date=datetime(2025, 10, 6, 15, 0), nb_persons=2, status=ReservationStatus.confirmed),
-        Reservation(user_id=bob_id, resource_type="Cinderella Inn", date=datetime(2025, 10, 7, 16, 0), nb_persons=4, status=ReservationStatus.pending),
-        Reservation(user_id=charlie_id, resource_type="Disney Music Hits Concert", date=datetime(2025, 10, 7, 17, 0), nb_persons=2, status=ReservationStatus.confirmed),
-        Reservation(user_id=david_id, resource_type="Billy Bob's Buffet", date=datetime(2025, 10, 7, 18, 0), nb_persons=4, status=ReservationStatus.pending),
+    restaurants = [
+        "Agrabah Cafe Restaurant",
+        "Alice and the Queen of Hearts : Return in Wonderland",
+        "Annette's Diner",
+        "Animation Academy",
+        "At the Puppet Chalet",
+        "Heroic Ceremony",
+        "Cinderella Inn",
+        "Disney Music Hits Concert",
+        "Billy Bob's Buffet",
     ]
+
+    reservations = []
+    for day_offset in range(10): # 10 days of reservations
+        current_date = datetime(base_date.year, base_date.month, base_date.day + day_offset)
+
+        for hour in [12, 13, 19, 20]: # 4 timeslots for lunch and dinner
+            reservation_date = current_date.replace(hour=hour, minute=0, second=0)
+
+            for i in range(3): # 3 reservations for each timeslot
+                user_id = user_ids[i % len(user_ids)]
+                resource_type = restaurants[i % len(restaurants)]
+                nb_persons = [2, 3, 4, 5][i % 4]
+                status = [ReservationStatus.confirmed, ReservationStatus.pending, ReservationStatus.cancelled][i % 3]
+
+                reservations.append(Reservation(user_id=user_id, resource_type=resource_type, date=reservation_date, nb_persons=nb_persons, status=status))
+
     db.add_all(reservations)
     db.commit()
 
@@ -153,12 +148,17 @@ def seed():
     # -----------------------------
 
     employees = [
-        Employee(name="Mickey Mouse", job="manager", assignment="Disneyland Resort"),
-        Employee(name="Minnie Mouse", job="assistant", assignment="Disneyland Resort"),
-        Employee(name="Donald Duck", job="sales", assignment="Disneyland Resort"),
-        Employee(name="Daisy Duck", job="assistant", assignment="Disneyland Resort"),
-        Employee(name="Pluto", job="marketing", assignment="Disneyland Resort"),
-        Employee(name="Goofy", job="security", assignment="Disneyland Resort"),
+        Employee(name="Mickey Mouse", job="General Manager", assignment="Central Administration"),
+        Employee(name="Minnie Mouse", job="Operations Manager", assignment="Park Management"),
+        Employee(name="Goofy", job="Attractions Manager", assignment="Space Mountain"),
+        Employee(name="Donald Duck", job="Attraction Operator", assignment="Pirates of the Caribbean"),
+        Employee(name="Daisy Duck", job="Receptionist", assignment="Big Thunder Mountain"),
+        Employee(name="Pluto", job="Maintenance Technician", assignment="Phantom Manor"),
+        Employee(name="Chef Remy", job="Chef", assignment="Bistrot Chez Remy"),
+        Employee(name="Light", job="Butler", assignment="Blue Lagoon Restaurant"),
+        Employee(name="Mrs. Potts", job="Service Manager", assignment="Plaza Gardens Restaurant"),
+        Employee(name="Simba", job="Main Performer", assignment="The Lion King and the Rhythms of the Earth"),
+        Employee(name="Elsa", job="Main Performer", assignment="Frozen"),
     ]
     db.add_all(employees)
     db.commit()

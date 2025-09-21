@@ -23,33 +23,80 @@ origins = [
     "http://127.0.0.1:5173",
 ]
 
+# En-têtes explicitement autorisés
+allowed_headers = [
+    "accept",
+    "accept-encoding",
+    "authorization",  # CRUCIAL
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,  # IMPORTANT pour avec credentials
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["*"],
+    allow_headers=allowed_headers,
     expose_headers=["*"],
 )
 
-# Gestion des erreurs pour maintenir CORS meme sur les erreurs 500
-@app.exception_handler(Exception)
-async def cors_exception_handler(request: Request, exc: Exception):
-    logger.error(f"Error: {exc}")
-
-    response = JSONResponse(
-        status_code=500,
-        content={"message": "Internal server error"}
-    )
-
-    # Ajout de l'en-tête Access-Control-Allow-Origin si l'origine est dans la liste des origines autorisées
-    origin = request.headers.get("origin")
+# Middleware OPTIONS preflight personnalisé
+@app.middleware("http")
+async def cors_preflight_middleware(request: Request, call_next):
+    # Gestion spéciale et complète des requêtes OPTIONS
+    if request.method == "OPTIONS":
+        origin = request.headers.get("origin", "")
+        
+        # Créer une réponse OPTIONS avec tous les en-têtes nécessaires
+        response = Response(status_code=200)
+        
+        # Origin
+        if origin in origins:
+            response.headers["Access-Control-Allow-Origin"] = origin
+        else:
+            response.headers["Access-Control-Allow-Origin"] = origins[0]
+        
+        # Credentials
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+        
+        # Methods
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+        
+        # Headers - EXPLICITLY include authorization
+        requested_headers = request.headers.get("access-control-request-headers", "")
+        if requested_headers:
+            # Valider que les en-têtes demandés sont autorisés
+            headers_list = [h.strip().lower() for h in requested_headers.split(",")]
+            valid_headers = [h for h in headers_list if h in [ah.lower() for ah in allowed_headers]]
+            response.headers["Access-Control-Allow-Headers"] = ", ".join(valid_headers)
+        else:
+            # Par défaut, autoriser tous nos en-têtes autorisés
+            response.headers["Access-Control-Allow-Headers"] = ", ".join(allowed_headers)
+        
+        # Cache preflight
+        response.headers["Access-Control-Max-Age"] = "86400"
+        
+        logger.info(f"OPTIONS preflight: {dict(response.headers)}")
+        return response
+    
+    # Pour les requêtes normales
+    try:
+        response = await call_next(request)
+    except Exception as e:
+        logger.error(f"Request failed: {e}")
+        response = Response(status_code=500, content="Internal server error")
+    
+    # Ajouter les en-têtes CORS aux réponses normales
+    origin = request.headers.get("origin", "")
     if origin in origins:
         response.headers["Access-Control-Allow-Origin"] = origin
     response.headers["Access-Control-Allow-Credentials"] = "true"
-    response.headers["Access-Control-Allow-Methods"] = "GET", "POST", "PUT", "DELETE", "OPTIONS"
-    response.headers["Access-Control-Allow-Headers"] = "*"
-
+    
     return response
 
 # Middleware pour logs et JWT - APRÈS CORS
