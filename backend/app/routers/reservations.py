@@ -11,7 +11,7 @@ router = APIRouter()
 # Create a new reservation
 @router.post("/new", response_model=ReservationOut)
 def create_reservation(reservation: ReservationCreate, db: Session = Depends(get_db), payload: dict = Depends(decode_access_token)):
-    user_id = payload.get("user_id")
+    user_id = payload.get("sub")
     new_reservation = Reservation(**reservation.dict(), user_id=user_id)
     db.add(new_reservation)
     db.commit()
@@ -21,20 +21,39 @@ def create_reservation(reservation: ReservationCreate, db: Session = Depends(get
 # User see all his reservations / admin see all reservations
 @router.get("/", response_model=List[ReservationOut])
 def list_reservations(db: Session = Depends(get_db), payload: Optional[dict] = Depends(decode_access_token_optional)):
-    if payload and payload.get("role") == "admin":
+
+    # if not payload, return all reservations
+    if not payload:
+        return []
+    
+    role = payload.get("role")
+    user_id = payload.get("sub")
+
+    if role == "admin":
         return db.query(Reservation).all()
-    elif payload and "user_id" in payload:
-        user_id = payload.get("user_id")
-        return db.query(Reservation).filter(Reservation.user_id == payload["user_id"]).all()
-    # if no payload, return []
-    return []
+    elif "user_id":
+        return db.query(Reservation).filter(Reservation.user_id == user_id).all()
+    else:
+        return []
 
 # Get a reservation by id
 @router.get("/{reservation_id}", response_model=ReservationOut)
-def get_reservation(reservation_id: int, db: Session = Depends(get_db)):
+def get_reservation(reservation_id: int, db: Session = Depends(get_db), payload: Optional[dict] = Depends(decode_access_token_optional)):
     reservation = db.query(Reservation).filter(Reservation.id == reservation_id).first()
     if not reservation:
         raise HTTPException(status_code=404, detail="Reservation not found")
+    
+    # Control access to reservation
+    if payload:
+        role = payload.get("role")
+        user_id = payload.get("sub")
+
+        if role == "admin" or str(user_id) == str(reservation.user_id):
+            return reservation
+        else:
+            raise HTTPException(status_code=403, detail="Access denied")
+    
+    # if not payload, return reservation
     return reservation
 
 # Admin only update a reservation

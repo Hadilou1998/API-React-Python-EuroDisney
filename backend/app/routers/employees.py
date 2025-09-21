@@ -20,6 +20,10 @@ def create_employee(employee: EmployeeCreate, db: Session = Depends(get_db)):
 # Get all employees
 @router.get("/", response_model=List[EmployeeOut])
 def get_employees(db: Session = Depends(get_db), payload: Optional[dict] = Depends(decode_access_token_optional)):
+    # Access control
+    if not payload:
+        return []
+    
     role = payload.get("role")
     user_id = payload.get("sub")
 
@@ -27,10 +31,11 @@ def get_employees(db: Session = Depends(get_db), payload: Optional[dict] = Depen
         # admin can see all employees
         return db.query(Employee).all()
     
-    employee = db.query(Employee).filter(Employee.id == user_id).all()
-    if not employee:
-        raise HTTPException(status_code=404, detail="Employee not found")
-    return employee
+    if role == "employee":
+        # employee can see all employees
+        return db.query(Employee).all()
+    
+    raise HTTPException(status_code=403, detail="Access denied")
 
 # Get employee by id
 @router.get("/{employee_id}", response_model=EmployeeOut)
@@ -39,10 +44,21 @@ def get_employee(employee_id: int, db: Session = Depends(get_db), payload: Optio
     if not employee:
         raise HTTPException(status_code=404, detail="Employee not found")
     
-    # Access control
-    if payload and payload.role == "admin":
+    # if not payload, we can return employee without access control
+    if not payload:
         return employee
-    elif payload and payload.get("user_id") == employee_id:
+    
+    # Access control
+    role = payload.get("role")
+    user_id = payload.get("sub")
+
+    if role == "admin":
+        # admin can see all employees
+        return employee
+    elif role == "employee" and str(user_id) == str(employee_id):
+        # employee can see his own information
+        return employee
+    elif role == "employee":
         return employee
     else:
         raise HTTPException(status_code=403, detail="Access denied")
@@ -57,7 +73,6 @@ def update_employee(employee_id: int, employee: EmployeeUpdate, db: Session = De
     for key, value in employee.dict(exclude_unset=True).items():
         setattr(db_employee, key, value)
 
-    db.add(db_employee)
     db.commit()
     db.refresh(db_employee)
     return db_employee

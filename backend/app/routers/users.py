@@ -7,7 +7,7 @@ from jose import JWTError, jwt
 from app.core.database import get_db
 from app.models.user import User
 from app.schemas.user import UserCreate, UserOut, UserUpdate
-from app.core.security import create_access_token, get_password_hash, verify_password, decode_access_token
+from app.core.security import create_access_token, get_password_hash, verify_password, decode_access_token_optional
 from app.core.config import settings
 
 router = APIRouter()
@@ -45,7 +45,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
         "role": user.role
     }}
 
-def get_current_user(payload: dict = Depends(decode_access_token), db: Session = Depends(get_db)):
+def get_current_user(payload: dict = Depends(decode_access_token_optional), db: Session = Depends(get_db)):
     
     user_id = payload.get("sub")
     if user_id is None:
