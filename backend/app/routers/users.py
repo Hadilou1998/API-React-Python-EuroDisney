@@ -35,7 +35,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
     
     access_token_expires = timedelta(minutes=60)
-    access_token = create_access_token(data={"sub": str(user.id)}, expires_delta=access_token_expires)
+    access_token = create_access_token(data={"sub": str(user.id), "role": user.role}, expires_delta=access_token_expires)
 
     # We return user + token directly
     return {"access_token": access_token, "token_type": "bearer", "user": {
@@ -45,13 +45,10 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
         "role": user.role
     }}
 
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    try:
-        payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
-        user_id = payload.get("sub")
-        if user_id is None:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
-    except JWTError:
+def get_current_user(payload: dict = Depends(decode_access_token), db: Session = Depends(get_db)):
+    
+    user_id = payload.get("sub")
+    if user_id is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
     
     user = db.query(User).filter(User.id == user_id).first()
@@ -60,14 +57,8 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     return user
 
 @router.get("/me", response_model=UserOut)
-def read_users_me(db: Session = Depends(get_db), payload: dict = Depends(decode_access_token)):
-    user_id = payload.get("user_id")
-    user = db.query(User).filter(User.id == user_id).first()
-    if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-    return user
-
-@router.get("/users", response_model=List[UserOut])
+def read_users_me(current_user: User = Depends(get_current_user)):
+    return current_user
 
 @router.get("/logout")
 def logout():
@@ -75,8 +66,7 @@ def logout():
 
 @router.get("/users", response_model=List[UserOut])
 def get_users(db: Session = Depends(get_db)):
-    users = db.query(User).all()
-    return users
+    return db.query(User).all()
 
 @router.get("/users/{user_id}", response_model=UserOut)
 def get_user(user_id: int, db: Session = Depends(get_db)):
