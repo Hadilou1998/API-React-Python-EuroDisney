@@ -1,5 +1,6 @@
-from fastapi import FastAPI, Request, Response
+from fastapi import FastAPI, Request, Response, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 import logging
 from app.core.config import settings
 from app.core.security import decode_access_token_optional
@@ -31,52 +32,30 @@ app.add_middleware(
     expose_headers=["*"],
 )
 
-# Middleware perso pour forcer les en-tetes CORS
-@app.middleware("http")
-async def cors_handler(request: Request, call_next):
-    # Log la requête
-    logger.info(f"Request: {request.method} {request.url}")
+# Gestion des erreurs pour maintenir CORS meme sur les erreurs 500
+@app.exception_handler(Exception)
+async def cors_exception_handler(request: Request, exc: Exception):
+    logger.error(f"Error: {exc}")
+
+    response = JSONResponse(
+        status_code=500,
+        content={"message": "Internal server error"}
+    )
+
+    # Ajout de l'en-tête Access-Control-Allow-Origin si l'origine est dans la liste des origines autorisées
     origin = request.headers.get("origin")
-    logger.info(f"Origin: {origin}")
-    
-    # Gestion spéciale pour OPTIONS (preflight)
-    if request.method == "OPTIONS":
-        response = Response()
-        
-        # Vérifier que l'origin est autorisée
-        if origin in origins:
-            response.headers["Access-Control-Allow-Origin"] = origin
-        else:
-            response.headers["Access-Control-Allow-Origin"] = origins[0]  # Fallback
-            
-        response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
-        response.headers["Access-Control-Allow-Headers"] = "*"
-        response.headers["Access-Control-Allow-Credentials"] = "true"
-        response.headers["Access-Control-Max-Age"] = "86400"  # Cache preflight 24h
-        
-        return response
-    
-    # Traiter la requête normale
-    response = await call_next(request)
-    
-    # Ajouter les en-têtes CORS à la réponse
     if origin in origins:
         response.headers["Access-Control-Allow-Origin"] = origin
-    else:
-        response.headers["Access-Control-Allow-Origin"] = origins[0]  # Fallback
-        
     response.headers["Access-Control-Allow-Credentials"] = "true"
-    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+    response.headers["Access-Control-Allow-Methods"] = "GET", "POST", "PUT", "DELETE", "OPTIONS"
     response.headers["Access-Control-Allow-Headers"] = "*"
-    
-    logger.info(f"Response status: {response.status_code}")
-    
+
     return response
 
-# Middleware pour logs et JWT
+# Middleware pour logs et JWT - APRÈS CORS
 @app.middleware("http")
-async def log_requests(request: Request, call_next):
-    # Skip pour OPTIONS déjà géré
+async def auth_middleware(request: Request, call_next):
+    # Skip pour OPTIONS déjà traité
     if request.method == "OPTIONS":
         return await call_next(request)
     
@@ -92,11 +71,9 @@ async def log_requests(request: Request, call_next):
         except Exception as e:
             logger.warning(f"Token decode error: {e}")
 
-    logger.info(f"Auth Request: {request.method} {request.url.path} - User: {user['sub']} - Role: {user['role']}")
+    logger.info(f"Auth: {request.method} {request.url.path} - User: {user['sub']} ({user['role']})")
     
     response = await call_next(request)
-    
-    logger.info(f"Auth Response: {request.method} {request.url.path} - Status: {response.status_code}")
     return response
 
 # Routers
