@@ -21,20 +21,8 @@ def create_reservation(reservation: ReservationCreate, db: Session = Depends(get
 # User see all his reservations / admin see all reservations
 @router.get("/", response_model=List[ReservationOut])
 def list_reservations(db: Session = Depends(get_db), payload: Optional[dict] = Depends(decode_access_token_optional)):
-
-    # if not payload, return all reservations
-    if not payload:
-        return []
-    
-    role = payload.get("role")
-    user_id = payload.get("sub")
-
-    if role == "admin":
-        return db.query(Reservation).all()
-    elif "user_id":
-        return db.query(Reservation).filter(Reservation.user_id == user_id).all()
-    else:
-        return []
+    # return all reservations 
+    return db.query(Reservation).all()
 
 # Get a reservation by id
 @router.get("/{reservation_id}", response_model=ReservationOut)
@@ -42,18 +30,6 @@ def get_reservation(reservation_id: int, db: Session = Depends(get_db), payload:
     reservation = db.query(Reservation).filter(Reservation.id == reservation_id).first()
     if not reservation:
         raise HTTPException(status_code=404, detail="Reservation not found")
-    
-    # Control access to reservation
-    if payload:
-        role = payload.get("role")
-        user_id = payload.get("sub")
-
-        if role == "admin" or str(user_id) == str(reservation.user_id):
-            return reservation
-        else:
-            raise HTTPException(status_code=403, detail="Access denied")
-    
-    # if not payload, return reservation
     return reservation
 
 # Admin only update a reservation

@@ -23,48 +23,24 @@ def create_employee(employee: EmployeeCreate, db: Session = Depends(get_db)):
 # Get all employees - Version avec debug complet
 @router.get("/", response_model=List[EmployeeOut])
 def get_employees(db: Session = Depends(get_db), payload: Optional[dict] = Depends(decode_access_token_optional)):
+    # return all employees
+    # return db.query(Employee).all()
     try:
-        logger.info("=== DEBUG get_employees ===")
-        logger.info(f"Payload received: {payload}")
-        
-        # Test de connexion DB
-        logger.info("Testing database connection...")
-        db_test = db.execute("SELECT 1").scalar()
-        logger.info(f"DB test result: {db_test}")
-        
-        # Test de requête Employee
-        logger.info("Querying Employee table...")
         employees = db.query(Employee).all()
-        logger.info(f"Found {len(employees)} employees")
-        
-        for emp in employees:
-            logger.info(f"Employee: {emp.id} - {emp.name}")
-            
         return employees
-        
     except Exception as e:
-        logger.error(f"ERROR in get_employees: {e}")
-        logger.error(f"Error type: {type(e)}")
-        logger.error(f"Traceback: {traceback.format_exc()}")
-        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+        import traceback
+        logger.error("Erreur dans get_employees: %s", str(e))
+        logger.error(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=f"Erreur serveur: {str(e)}")
 
 # Get employee by id - Version avec debug
 @router.get("/{employee_id}", response_model=EmployeeOut)
-def get_employee(employee_id: int, db: Session = Depends(get_db), payload: Optional[dict] = Depends(decode_access_token_optional)):
-    try:
-        logger.info(f"Getting employee {employee_id}")
-        employee = db.query(Employee).filter(Employee.id == employee_id).first()
-        if not employee:
-            raise HTTPException(status_code=404, detail="Employee not found")
-        
-        logger.info(f"Found employee: {employee.name}")
-        return employee
-        
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Error in get_employee: {e}")
-        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+def get_employee(employee_id: int, db: Session = Depends(get_db)):
+    employee = db.query(Employee).filter(Employee.id == employee_id).first()
+    if not employee:
+        raise HTTPException(status_code=404, detail="Employee not found")
+    return employee
 
 # Admin only update employee by id
 @router.put("/{employee_id}", response_model=EmployeeOut, dependencies=[Depends(require_role("admin"))])
