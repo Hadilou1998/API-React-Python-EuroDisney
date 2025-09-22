@@ -159,12 +159,24 @@ def seed():
         Employee(name="Mrs. Potts", job="Service Manager", assignment="Plaza Gardens Restaurant"),
         Employee(name="Simba", job="Main Performer", assignment="The Lion King and the Rhythms of the Earth"),
         Employee(name="Elsa", job="Main Performer", assignment="Frozen"),
+        Employee(name="Woody", job="Security Guard", assignment="Central Zone Patrol"),
+        Employee(name="Buzz Lightyear", job="Security Guard", assignment="Patrol Attractions Zone"),
+        Employee(name="Wall-E", job="Maintenance Technician", assignment="General Maintenance"),
+        Employee(name="Eve", job="Electronic Technician", assignment="Computer Systems"),
+        Employee(name="Belle", job="Customer Advisor", assignment="Main Home"),
+        Employee(name="Cendrillon", job="Tourist Guide", assignment="Guided Tours"),
+        Employee(name="Ariel", job="Animator", assignment="Children's Activities"),
     ]
     db.add_all(employees)
     db.commit()
     
     db.close()
     print("Seeding complete successfully !")
+    print(f"- {len(users)} users created (1 admin, {len(employee_ids)} employees, {len(user_ids)} visitors)")
+    print(f"- {len(attractions)} attractions created")
+    print(f"- {len(tickets)} tickets created")
+    print(f"- {len(reservations)} reservations created")
+    print(f"- {len(employees)} employees created")
 
 if __name__ == "__main__":
     seed()
