@@ -1,5 +1,6 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Response, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 import logging
 from app.routers import users, attractions, tickets, employees, reservations
 
@@ -24,11 +25,45 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Gestionnaire d'exception pour maintenir CORS en cas d'erreur 500
+@app.exception_handler(Exception)
+async def core_exception_handler(request: Request, exc: HTTPException):
+    return JSONResponse(
+        status_code=500,
+        content={"message": "Internal server error"},
+    )
+
+    # Maintenir CORS même en cas d'erreur
+    origin = request.headers.get("origin", "")
+    if origin in origins:
+        response.headers["Access-Control-Allow-Origin"] = origin
+    response.headers["Access-Control-Allow-Credentials"] = "true"
+    response.headers["Access-Control-Allow-Methods"] = "*"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+
+    return response
+
 # Middleware simple pour logs + JWT
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
     logging.info(f"Request: {request.method} {request.url.path}")
-    response = await call_next(request)
+    
+    # Protéger contre les erreurs dans le middleware
+    try:
+        response = await call_next(request)
+    except Exception as e:
+        # Si erreur, créer une réponse avec CORS
+        response = JSONResponse(
+            status_code=500,
+            content={"detail": "Request failed"}
+        )
+        
+        # Ajouter CORS
+        origin = request.headers.get("origin", "")
+        if origin in origins:
+            response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+    
     return response
 
 # Routers
