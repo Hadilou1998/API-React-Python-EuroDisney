@@ -63,7 +63,6 @@ def seed():
     # Retrieve reel IDs
     user_dict = {u.name: u.id for u in db.query(User).all()}
     user_ids = [u.id for u in db.query(User).filter(User.role == "user").all()]
-    employee_ids = [u.id for u in db.query(User).filter(User.role == "employee").all()]
 
     # -----------------------------
     # seed attractions
