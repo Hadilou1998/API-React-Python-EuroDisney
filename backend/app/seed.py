@@ -11,11 +11,11 @@ def seed():
     db: Session = SessionLocal()
 
     # Delete all data exists
-    db.query(Ticket).delete()
-    db.query(Reservation).delete()
-    db.query(Employee).delete()
-    db.query(Attraction).delete()
-    db.query(User).delete()
+    db.query(Ticket).delete(synchronize_session=False)
+    db.query(Reservation).delete(synchronize_session=False)
+    db.query(Employee).delete(synchronize_session=False)
+    db.query(Attraction).delete(synchronize_session=False)
+    db.query(User).delete(synchronize_session=False)
     db.commit()
     
     # -----------------------------
@@ -125,18 +125,14 @@ def seed():
     ]
 
     reservations = []
-    for day_offset in range(10): # 10 days of reservations
+    for day_offset in range(3): # 3 days of reservations
         current_date = datetime(base_date.year, base_date.month, base_date.day + day_offset)
 
         for hour in [12, 13, 19, 20]: # 4 timeslots for lunch and dinner
             reservation_date = current_date.replace(hour=hour, minute=0, second=0)
 
             for i, user_id in enumerate(user_ids): # 3 reservations for each timeslot
-                resource_type = restaurants[i % len(restaurants)]
-                nb_persons = 2 + i % 4
-                status = [ReservationStatus.confirmed, ReservationStatus.pending, ReservationStatus.cancelled][i % 3]
-
-                reservations.append(Reservation(user_id=user_id, resource_type=resource_type, date=reservation_date, nb_persons=nb_persons, status=status))
+                reservations.append(Reservation(user_id=user_id, resource_type=restaurants[i], date=reservation_date, nb_persons=2 + i % 3, status=list(ReservationStatus)[i % 3]))
 
     db.add_all(reservations)
     db.commit()
