@@ -3,25 +3,21 @@ from datetime import datetime
 from typing import Optional
 from enum import Enum
 
-class ResourceType(str, Enum):
-    restaurant = "restaurant"
-    show = "show"
-
 class ReservationStatus(str, Enum):
     pending = "pending"
     confirmed = "confirmed"
     cancelled = "cancelled"
 
 class ReservationBase(BaseModel):
-    resource_type: ResourceType
+    resource_type: str
     date: datetime
     nb_persons: Optional[int] = None
 
 class ReservationCreate(ReservationBase):
-    pass
+    user_id: int
 
 class ReservationUpdate(BaseModel):
-    resource_type: Optional[ResourceType] = None
+    resource_type: Optional[str] = None
     date: Optional[datetime] = None
     nb_persons: Optional[int] = None
     status: Optional[ReservationStatus] = None
