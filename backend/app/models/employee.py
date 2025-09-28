@@ -1,5 +1,4 @@
-from datetime import datetime
-from sqlalchemy import Column, Integer, String, DateTime, JSON
+from sqlalchemy import Column, Integer, String, JSON
 from app.core.database import Base
 
 class Employee(Base):
@@ -8,4 +7,4 @@ class Employee(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), nullable=False)
     job = Column(String(100), nullable=False)
-    assignment = Column(String(100), nullable=True, default="list")
+    assignment = Column(JSON, nullable=True, default=[])
