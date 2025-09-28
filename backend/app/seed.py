@@ -134,14 +134,6 @@ def seed():
         Reservation(user_id=user_ids[16], resource_type="Billy Bob's Buffet", date=datetime(2025, 12, 16, 18, 0), nb_persons=3, status=ReservationStatus.pending),
         Reservation(user_id=user_ids[17], resource_type="Cinderella Inn", date=datetime(2025, 12, 17, 12, 0), nb_persons=2, status=ReservationStatus.confirmed),
         Reservation(user_id=user_ids[18], resource_type="Disney Music Hits Concert", date=datetime(2025, 12, 18, 14, 0), nb_persons=2, status=ReservationStatus.pending),
-        Reservation(user_id=user_ids[19], resource_type="Heroic Ceremony", date=datetime(2025, 12, 19, 16, 0), nb_persons=2, status=ReservationStatus.confirmed),
-        Reservation(user_id=user_ids[20], resource_type="At the Puppet Chalet", date=datetime(2025, 12, 20, 12, 0), nb_persons=4, status=ReservationStatus.pending),
-        Reservation(user_id=user_ids[21], resource_type="Animation Academy", date=datetime(2025, 12, 21, 18, 0), nb_persons=3, status=ReservationStatus.confirmed),
-        Reservation(user_id=user_ids[22], resource_type="Agrabah Cafe Restaurant", date=datetime(2025, 12, 22, 10, 0), nb_persons=2, status=ReservationStatus.cancelled),
-        Reservation(user_id=user_ids[23], resource_type="Disney Music Hits Concert", date=datetime(2025, 12, 23, 14, 0), nb_persons=2, status=ReservationStatus.pending),
-        Reservation(user_id=user_ids[24], resource_type="Billy Bob's Buffet", date=datetime(2025, 12, 24, 18, 0), nb_persons=3, status=ReservationStatus.confirmed),
-        Reservation(user_id=user_ids[25], resource_type="Cinderella Inn", date=datetime(2025, 12, 25, 12, 0), nb_persons=2, status=ReservationStatus.cancelled),
-        Reservation(user_id=user_ids[26], resource_type="Heroic Ceremony", date=datetime(2025, 12, 26, 16, 0), nb_persons=2, status=ReservationStatus.pending),
     ]
 
     db.add_all(reservations)
