@@ -131,7 +131,7 @@ def seed():
         Reservation(user_id=user_ids[13], resource_type="Animation Academy", date=datetime(2025, 12, 13, 18, 0), nb_persons=3, status=ReservationStatus.pending),
         Reservation(user_id=user_ids[14], resource_type="Agrabah Cafe Restaurant", date=datetime(2025, 12, 14, 10, 0), nb_persons=2, status=ReservationStatus.pending),
         Reservation(user_id=user_ids[15], resource_type="Annette's Diner", date=datetime(2025, 12, 15, 10, 0), nb_persons=4, status=ReservationStatus.confirmed),
-        Reservation(user_id=user_ids[16], resource_type="Billy Bob's Buffet", date=datetime(2025, 16, 7, 18, 0), nb_persons=3, status=ReservationStatus.pending),
+        Reservation(user_id=user_ids[16], resource_type="Billy Bob's Buffet", date=datetime(2025, 12, 16, 18, 0), nb_persons=3, status=ReservationStatus.pending),
         Reservation(user_id=user_ids[17], resource_type="Cinderella Inn", date=datetime(2025, 12, 17, 12, 0), nb_persons=2, status=ReservationStatus.confirmed),
         Reservation(user_id=user_ids[18], resource_type="Disney Music Hits Concert", date=datetime(2025, 12, 18, 14, 0), nb_persons=2, status=ReservationStatus.pending),
         Reservation(user_id=user_ids[19], resource_type="Heroic Ceremony", date=datetime(2025, 12, 19, 16, 0), nb_persons=2, status=ReservationStatus.confirmed),
