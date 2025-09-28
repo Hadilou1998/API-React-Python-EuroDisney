@@ -28,42 +28,43 @@ app.add_middleware(
 # Gestionnaire d'exception pour maintenir CORS en cas d'erreur 500
 @app.exception_handler(Exception)
 async def core_exception_handler(request: Request, exc: HTTPException):
+    # Maintenir CORS même en cas d'erreur
+    origin = request.headers.get("origin", "")
+    headers = {}
+    if origin in origins:
+        headers = {
+            "Access-Control-Allow-Origin": origin,
+            "Access-Control-Allow-Credentials": "true",
+            "Access-Control-Allow-Methods": "*",
+            "Access-Control-Allow-Headers": "*",
+        }
+
     return JSONResponse(
         status_code=500,
         content={"message": "Internal server error"},
+        headers=headers
     )
-
-    # Maintenir CORS même en cas d'erreur
-    origin = request.headers.get("origin", "")
-    if origin in origins:
-        response.headers["Access-Control-Allow-Origin"] = origin
-    response.headers["Access-Control-Allow-Credentials"] = "true"
-    response.headers["Access-Control-Allow-Methods"] = "*"
-    response.headers["Access-Control-Allow-Headers"] = "*"
-
-    return response
 
 # Middleware simple pour logs + JWT
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
     logging.info(f"Request: {request.method} {request.url.path}")
-    
-    # Protéger contre les erreurs dans le middleware
     try:
         response = await call_next(request)
     except Exception as e:
-        # Si erreur, créer une réponse avec CORS
+        logging.error(f"Error during request: {e}", exc_info=True)
+        origin = request.headers.get("origin", "")
+        headers = {}
+        if origin in origins:
+            headers = {
+                "Access-Control-Allow-Origin": origin,
+                "Access-Control-Allow-Credentials": "true"
+            }
         response = JSONResponse(
             status_code=500,
-            content={"detail": "Request failed"}
-        )
-        
-        # Ajouter CORS
-        origin = request.headers.get("origin", "")
-        if origin in origins:
-            response.headers["Access-Control-Allow-Origin"] = origin
-        response.headers["Access-Control-Allow-Credentials"] = "true"
-    
+            content={"detail": "Request failed"},
+            headers=headers
+        )       
     return response
 
 # Routers
