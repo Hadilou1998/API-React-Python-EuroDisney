@@ -20,10 +20,11 @@ class ReservationBase(BaseModel):
 class ReservationCreate(ReservationBase):
     pass
 
-class ReservationUpdate(ReservationBase):
+class ReservationUpdate(BaseModel):
     resource_type: Optional[ResourceType] = None
     date: Optional[datetime] = None
     nb_persons: Optional[int] = None
+    status: Optional[ReservationStatus] = None
 
 class ReservationOut(ReservationBase):
     id: int
@@ -32,4 +33,3 @@ class ReservationOut(ReservationBase):
 
     class Config:
         from_attributes = True
-        orm_mode = True
