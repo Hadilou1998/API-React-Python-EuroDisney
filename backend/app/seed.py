@@ -61,10 +61,9 @@ def seed():
     db.commit()
 
     # Retrieve reel IDs
-    admin_id = users[0].id
-    employee_ids = [users[1].id, users[2].id, users[3].id, users[4].id, users[5].id]
-    user_list = db.query(User).filter(User.role == "user").all()
-    user_ids = [u.id for u in user_list]
+    user_dict = {u.name: u.id for u in db.query(User).all()}
+    user_ids = [u.id for u in db.query(User).filter(User.role == "user").all()]
+    employee_ids = [u.id for u in db.query(User).filter(User.role == "employee").all()]
 
     # -----------------------------
     # seed attractions
@@ -133,10 +132,9 @@ def seed():
         for hour in [12, 13, 19, 20]: # 4 timeslots for lunch and dinner
             reservation_date = current_date.replace(hour=hour, minute=0, second=0)
 
-            for i in range(3): # 3 reservations for each timeslot
-                user_id = user_ids[i % len(user_ids)]
+            for i, user_id in enumerate(user_ids): # 3 reservations for each timeslot
                 resource_type = restaurants[i % len(restaurants)]
-                nb_persons = [2, 3, 4, 5][i % 4]
+                nb_persons = 2 + i % 4
                 status = [ReservationStatus.confirmed, ReservationStatus.pending, ReservationStatus.cancelled][i % 3]
 
                 reservations.append(Reservation(user_id=user_id, resource_type=resource_type, date=reservation_date, nb_persons=nb_persons, status=status))
@@ -173,7 +171,7 @@ def seed():
     
     db.close()
     print("Seeding complete successfully !")
-    print(f"- {len(users)} users created (1 admin, {len(employee_ids)} employees, {len(user_ids)} visitors)")
+    print(f"- {len(users)} users created")
     print(f"- {len(attractions)} attractions created")
     print(f"- {len(tickets)} tickets created")
     print(f"- {len(reservations)} reservations created")
