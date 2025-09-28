@@ -132,7 +132,7 @@ def seed():
             reservation_date = current_date.replace(hour=hour, minute=0, second=0)
 
             for i, user_id in enumerate(user_ids): # 3 reservations for each timeslot
-                reservations.append(Reservation(user_id=user_id, resource_type=restaurants[i], date=reservation_date, nb_persons=2 + i % 3, status=list(ReservationStatus)[i % 3]))
+                reservations.append(Reservation(user_id=user_id, resource_type=restaurants[i % len(restaurants)], date=reservation_date, nb_persons=2 + i % 3, status=list(ReservationStatus)[i % 3]))
 
     db.add_all(reservations)
     db.commit()
