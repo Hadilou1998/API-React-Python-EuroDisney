@@ -27,7 +27,7 @@ export default function EmployeeList() {
     return (
         <>
             <h2>Employees</h2>
-            <button className="btn primary" onClick={() => nav('/new')}>Add</button>
+            <button className="btn primary" onClick={() => nav('/employees/new')}>Add</button>
             <table className="table">
                 <thead>
                     <tr>
@@ -38,13 +38,13 @@ export default function EmployeeList() {
                 </thead>
                 <tbody>
                     {employees.length > 0 ? (
-                        employees.map(emp => (
+                        employees.map((emp) => (
                             <tr key={emp.id}>
                                 <td>{emp.name}</td>
                                 <td>{emp.job}</td>
                                 <td>{emp.assignment}</td>
                                 <td style={{ display: 'flex', gap:8 }}>
-                                    <button className='btn' onClick={() => nav(`/${emp.id}/edit`)}>Edit</button>
+                                    <button className='btn' onClick={() => nav(`/employees/${emp.id}/edit`)}>Edit</button>
                                     <button className="btn" onClick={() => del.mutate(emp.id)}>Delete</button>
                                 </td>
                             </tr>

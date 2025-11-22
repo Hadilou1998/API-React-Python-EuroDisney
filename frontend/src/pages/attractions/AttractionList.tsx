@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { deleteAttraction, listAttractions } from '../../api/endpoints';
 import { useAuth } from '../../auth/AuthContext';
 
-export default function AttractionsList() {
+export default function AttractionList() {
     const queryClient = useQueryClient();
     const nav = useNavigate();
     const { user, token } = useAuth();
@@ -27,17 +27,17 @@ export default function AttractionsList() {
     return (
         <div>
             <h2>Attractions</h2>
-            {user?.role === 'admin' && <button className="btn primary" onClick={() => nav('/new')}>Add</button>}
+            {user?.role === 'admin' && <button className="btn primary" onClick={() => nav('/attractions/new')}>Add</button>}
             <div className="card">
                 {attractions.length > 0 ? (
                     attractions.map(a => (
                         <div key={a.id} className="card">
-                            <h3><Link to={`/${a.id}`}>{a.name}</Link></h3>
+                            <h3><Link to={`/attractions/${a.id}`}>{a.name}</Link></h3>
                             <p>{a.description}</p>
                             <p>Capacity: {a.capacity} - Status: {a.status}</p>
                             {user?.role === 'admin' && (
                                 <div className="actions">
-                                    <button className="btn" onClick={() => nav(`/${a.id}/edit`)}>Edit</button>
+                                    <button className="btn" onClick={() => nav(`/attractions/${a.id}/edit`)}>Edit</button>  
                                     <button className="btn" onClick={() => del.mutate(a.id)}>Delete</button>
                                 </div>
                             )}

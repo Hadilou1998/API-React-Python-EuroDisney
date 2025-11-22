@@ -4,7 +4,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
-import AttractionsList from './pages/attractions/AttractionsList';
+import AttractionsList from './pages/attractions/AttractionList';
 import AttractionDetail from './pages/attractions/AttractionDetail';
 import AttractionForm from './pages/attractions/AttractionForm';
 import TicketsList from './pages/tickets/TicketsList';
