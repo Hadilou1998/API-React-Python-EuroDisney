@@ -1,11 +1,19 @@
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getTicket } from '../../api/endpoints';
+import { useAuth } from '../../auth/AuthContext';
 
 export default function TicketDetail() {
     const { id } = useParams();
     const number = Number(id);
-    const { data, isLoading } = useQuery({ queryKey: ['tickets', number], queryFn: () => getTicket(number), enabled: !!number });
+    const { token } = useAuth();
+    
+    const { data, isLoading } = useQuery({ 
+        queryKey: ['tickets', number], 
+        queryFn: () => getTicket(number, token || ""), 
+        enabled: !!number && !!token
+    });
+
     if (isLoading) return <p>Loading...</p>
     if (!data) return <p>Ticket not found</p>
 
