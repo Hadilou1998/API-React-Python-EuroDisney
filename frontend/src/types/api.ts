@@ -66,6 +66,20 @@ export interface Ticket {
     status?: string;
 }
 
+export interface CreateTicketPayload {
+    user_id: number;
+    attraction_id: number;
+    date: string;
+    qr_code: string;
+}
+
+export interface UpdateTicketPayload {
+    user_id?: number;
+    attraction_id?: number;
+    date?: string;
+    qr_code?: string;
+}
+
 // ===== RESERVATIONS =====
 export interface Reservation {
     id: number;
@@ -74,6 +88,20 @@ export interface Reservation {
     date: string;
     nb_persons: number;
     status: 'pending' | 'confirmed' | 'cancelled';
+}
+
+export interface CreateReservationPayload {
+    resource_type: string;
+    date: string;
+    nb_persons: number;
+    status: 'pending' | 'confirmed' | 'cancelled';
+}
+
+export interface UpdateReservationPayload {
+    resource_type?: string;
+    date?: string;
+    nb_persons?: number;
+    status?: 'pending' | 'confirmed' | 'cancelled';
 }
 
 // ===== EMPLOYEES =====
