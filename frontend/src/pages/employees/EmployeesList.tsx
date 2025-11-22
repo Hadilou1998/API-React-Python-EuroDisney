@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { deleteEmployee, listEmployees } from '../../api/endpoints';
 import { useAuth } from '../../auth/AuthContext';
 
-export default function EmployeeList() {
+export default function EmployeesList() {
     const nav = useNavigate();
     const queryClient = useQueryClient();
     const { token } = useAuth(); 
