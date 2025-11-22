@@ -1,25 +1,49 @@
 import { useQuery } from '@tanstack/react-query';
 import { listReservations } from '../../api/endpoints';
 import { useAuth } from '../../auth/AuthContext';
+import { Link } from 'react-router-dom';
 
 export default function ReservationsList() {
-    const { token } = useAuth();
+    const { token, user } = useAuth();
 
-    const { data, isLoading, error } = useQuery({ 
-        queryKey: ['reservations'], 
+    const { data, isLoading, error } = useQuery({
+        queryKey: ['reservations'],
         queryFn: () => listReservations(token || ""),
         enabled: !!token,
     });
 
     if (isLoading) return <p>Loading...</p>;
-    if (error) return <p>Error: {error.message}</p>;
+    if (error) return <p>Error: {String(error)}</p>;
 
-    // Protection if data is not a array
     const reservations = Array.isArray(data) ? data : [];
+
+    // Roles
+    const isAdmin = user?.role === "admin";
+    const isEmployee = user?.role === "employee";
+    const isUser = user?.role === "user";
+
+    // Users only see their own reservations
+    const filteredReservations =
+        isUser
+            ? reservations.filter(r => r.user_id === user.id)
+            : reservations; // admin + employee see all
 
     return (
         <>
             <h2>Reservations</h2>
+
+            {isEmployee && (
+                <p style={{ color: "gray", marginBottom: 12 }}>
+                    Employees can view all reservations but cannot modify or delete them.
+                </p>
+            )}
+
+            {isUser && (
+                <Link className="btn primary" to="/reservations/new" style={{ marginBottom: 12 }}>
+                    Create a reservation
+                </Link>
+            )}
+
             <table className="table">
                 <thead>
                     <tr>
@@ -29,26 +53,50 @@ export default function ReservationsList() {
                         <th>Date</th>
                         <th>Persons</th>
                         <th>Status</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
+
                 <tbody>
-                    {reservations.length > 0 ? (
-                        reservations.map(res => (
-                            <tr key={res.id}>
-                                <td>{res.user_id}</td>
-                                <td>{res.resource_type}</td>
-                                <td>{new Date(res.date).toLocaleString()}</td>
-                                <td>{res.nb_persons}</td>
-                                <td>{res.status}</td>
-                            </tr>
-                        ))
+                    {filteredReservations.length > 0 ? (
+                        filteredReservations.map(res => {
+                            const isOwner = isUser && res.user_id === user.id;
+                            const canEdit = isAdmin || isOwner;
+
+                            return (
+                                <tr key={res.id}>
+                                    <td>{res.id}</td>
+                                    <td>{res.user_id}</td>
+                                    <td>{res.resource_type}</td>
+                                    <td>{new Date(res.date).toLocaleString()}</td>
+                                    <td>{res.nb_persons}</td>
+                                    <td>{res.status}</td>
+
+                                    <td>
+                                        <Link className="btn small" to={`/reservations/${res.id}`}>
+                                            View
+                                        </Link>
+
+                                        {canEdit && (
+                                            <Link
+                                                className="btn small primary"
+                                                style={{ marginLeft: 6 }}
+                                                to={`/reservations/${res.id}/edit`}
+                                            >
+                                                Edit
+                                            </Link>
+                                        )}
+                                    </td>
+                                </tr>
+                            );
+                        })
                     ) : (
                         <tr>
-                            <td colSpan={6}>No reservations available</td>
+                            <td colSpan={7}>No reservations found</td>
                         </tr>
                     )}
                 </tbody>
             </table>
         </>
     );
-};
+}
