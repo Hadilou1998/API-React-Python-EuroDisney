@@ -14,7 +14,7 @@ class ReservationBase(BaseModel):
     nb_persons: Optional[int] = None
 
 class ReservationCreate(ReservationBase):
-    user_id: int
+    pass
 
 class ReservationUpdate(BaseModel):
     resource_type: Optional[str] = None
