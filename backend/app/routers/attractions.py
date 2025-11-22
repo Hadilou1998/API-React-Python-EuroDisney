@@ -9,7 +9,7 @@ from typing import List
 router = APIRouter()
 
 # Admin only create a new attraction
-@router.post("/", response_model=AttractionOut, dependencies=[Depends(require_role("admin"))])
+@router.post("/new", response_model=AttractionOut, dependencies=[Depends(require_role("admin"))])
 def create_attraction(attraction: AttractionCreate, db: Session = Depends(get_db)):
     new_attraction = Attraction(**attraction.dict())
     db.add(new_attraction)
