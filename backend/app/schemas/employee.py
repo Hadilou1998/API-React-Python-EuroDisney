@@ -1,21 +1,18 @@
 from pydantic import BaseModel
-from typing import List, Optional
-
-class AssignmentItem(BaseModel):
-    target_type: str
+from typing import Optional
 
 class EmployeeBase(BaseModel):
     name: str
     job: str
-    assignment: Optional[List[AssignmentItem]] = []
+    assignment: Optional[str] = None
 
 class EmployeeCreate(EmployeeBase):
-    password: str
+    pass
 
 class EmployeeUpdate(EmployeeBase):
     name: Optional[str] = None
     job: Optional[str] = None
-    assignment: Optional[List[AssignmentItem]] = None
+    assignment: Optional[str] = None
 
 
 class EmployeeOut(EmployeeBase):
