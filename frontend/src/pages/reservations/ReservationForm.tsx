@@ -33,6 +33,7 @@ export default function ReservationForm() {
             resource_type: resource,
             date,
             nb_persons: persons,
+            user_id: user?.id,
             status,
         };
 

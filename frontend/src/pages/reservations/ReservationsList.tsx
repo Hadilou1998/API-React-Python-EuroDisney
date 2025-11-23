@@ -12,21 +12,21 @@ export default function ReservationsList() {
         enabled: !!token,
     });
 
+    if (!token) return <p>You must be logged in.</p>;
     if (isLoading) return <p>Loading...</p>;
-    if (error) return <p>Error: {String(error)}</p>;
+    if (error) return <p>Error loading reservations.</p>;
 
     const reservations = Array.isArray(data) ? data : [];
 
-    // Roles
-    const isAdmin = user?.role === "admin";
-    const isEmployee = user?.role === "employee";
     const isUser = user?.role === "user";
+    const isEmployee = user?.role === "employee";
+    const isAdmin = user?.role === "admin";
 
-    // Users only see their own reservations
+    // Filtrer pour utilisateur
     const filteredReservations =
-        isUser
-            ? reservations.filter(r => r.user_id === user.id)
-            : reservations; // admin + employee see all
+        isUser 
+            ? reservations.filter(r => Number(r.user_id) === Number(user.id)) 
+            : reservations;
 
     return (
         <>
