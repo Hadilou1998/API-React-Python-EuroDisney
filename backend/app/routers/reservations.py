@@ -50,15 +50,19 @@ def get_reservation(
     db: Session = Depends(get_db),
     payload: Optional[dict] = Depends(decode_access_token_optional)
 ):
+    if not payload:
+        raise HTTPException(status_code=401, detail="Missing or invalid token")
+
     reservation = db.query(Reservation).filter(Reservation.id == reservation_id).first()
+    
     if not reservation:
-        raise HTTPException(404, "Reservation not found")
+        raise HTTPException(status_code=404, detail="Reservation not found")
 
     role = payload.get("role")
     user_id = payload.get("sub")
 
     if role == "user" and reservation.user_id != user_id:
-        raise HTTPException(403, "You cannot access other users' reservations")
+        raise HTTPException(status_code=403, detail="You cannot access other users' reservations")
 
     return reservation
 
