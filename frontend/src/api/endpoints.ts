@@ -18,14 +18,9 @@ import type {
 } from '../types/api';
 
 // === Auth ===
-// FastAPI OAuth2PasswordRequestForm attend username et password en x-www-form-urlencoded
 export const login = (p: LoginPayload) => {
-    const formData = new URLSearchParams();
-    formData.append("username", p.email);  // FastAPI s'attend à "username"
-    formData.append("password", p.password);
-
-    return api.post<LoginResponse>("/auth/login", formData, {
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    return api.post<LoginResponse>("/auth/login", p, {
+        headers: { "Content-Type": "application/json" },
         withCredentials: true, // si on gère les cookies
     }).then(r => r.data);
 };
