@@ -1,19 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from datetime import timedelta
 from typing import List
-from jose import JWTError, jwt
 from app.core.database import get_db
 from app.models.user import User
-from app.schemas.user import UserCreate, UserOut, UserUpdate
+from app.schemas.user import UserCreate, UserOut, UserUpdate, LoginJSON
 from app.core.security import create_access_token, get_password_hash, verify_password, decode_access_token_optional
-from app.core.config import settings
 
 router = APIRouter()
-
-# Schema Oauth2
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 @router.post("/register", response_model=UserOut)
 def register(user: UserCreate, db: Session = Depends(get_db)):
@@ -29,8 +23,8 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     return new_user
 
 @router.post("/login")
-def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.email == form_data.username).first()
+def login(form_data: LoginJSON, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == form_data.email).first()
     if not user or not verify_password(form_data.password, user.password):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
     
@@ -77,9 +71,12 @@ def get_user(user_id: int, db: Session = Depends(get_db)):
 @router.put("/users/{user_id}", response_model=UserOut)
 def update_user(user_id: int, user: UserUpdate, db: Session = Depends(get_db)):
     db_user = db.query(User).filter(User.id == user_id).first()
-    if not db_user: return None
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
     for key, value in user.dict(exclude_unset=True).items():
         setattr(db_user, key, value)
+
     db.commit()
     db.refresh(db_user)
     return db_user
@@ -87,7 +84,8 @@ def update_user(user_id: int, user: UserUpdate, db: Session = Depends(get_db)):
 @router.delete("/users/{user_id}")
 def delete_user(user_id: int, db: Session = Depends(get_db)):
     db_user = db.query(User).filter(User.id == user_id).first()
-    if not db_user: return None
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
     db.delete(db_user)
     db.commit()
-    return db_user
+    return {"message": "User deleted"}

@@ -20,3 +20,7 @@ class UserOut(UserBase):
 
     class Config:
         from_attributes = True
+
+class LoginJSON(BaseModel):
+    email: str
+    password: str
