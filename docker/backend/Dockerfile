@@ -4,7 +4,7 @@ WORKDIR /app
 
 RUN pip install --no-cache-dir \
     fastapi \
-    "uvicorn-standard" \
+    "uvicorn[standard]" \
     sqlalchemy \
     pymysql \
     pydantic \
