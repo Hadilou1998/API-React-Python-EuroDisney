@@ -9,8 +9,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: supersaiyan
       MYSQL_DATABASE: eurodisney
-      MYSQL_USER: root
-      MYSQL_PASSWORD: supersaiyan
 
     ports:
       - "3306:3306"
@@ -24,10 +22,10 @@ services:
         "CMD",
         "mysqladmin",
         "ping",
-        "-u",
-        "root",
-        "-p",
-        "supersaiyan"
+        "-h",
+        "localhost",
+        "-uroot",
+        "-psupersaiyan"
       ]
       interval: 10s
       timeout: 5s
@@ -46,8 +44,8 @@ services:
       - "8000:8000"
 
     environment:
-      DATABASE_URL: mysql+pymysql://root:supersaiyan@db:3306/eurodisney
-      SECRET_KEY: superkey
+      DATABASE_URL: "mysql+pymysql://root:supersaiyan@db:3306/eurodisney?charset=utf8mb4"
+      SECRET_KEY: "mykey"
 
     depends_on:
       db:
