@@ -10,9 +10,6 @@ services:
       MYSQL_ROOT_PASSWORD: supersaiyan
       MYSQL_DATABASE: eurodisney
 
-    ports:
-      - "3306:3306"
-
     volumes:
       - mysql_data:/var/lib/mysql
       - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
