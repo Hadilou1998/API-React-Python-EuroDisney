@@ -3,11 +3,11 @@ import { useQuery } from '@tanstack/react-query';
 import { listAttractions, listTickets, listEmployees, listReservations } from '../api/endpoints';
 
 export default function Dashboard() {
-    const { user } = useAuth();
-    const { data: attractions } = useQuery({ queryKey:['attractions'], queryFn: listAttractions });
-    const { data: tickets } = useQuery({ queryKey:['tickets'], queryFn: listTickets });
-    const { data: employees } = useQuery({ queryKey:['employees'], queryFn: listEmployees });
-    const { data: reservations } = useQuery({ queryKey:['reservations'], queryFn: listReservations });
+    const { user, token } = useAuth();
+    const { data: attractions = [] } = useQuery({ queryKey:['attractions'], queryFn: listAttractions });
+    const { data: tickets = [] } = useQuery({ queryKey:['tickets'], queryFn: () => listTickets(token!), enabled: !!token, });
+    const { data: employees = [] } = useQuery({ queryKey:['employees'], queryFn: () => listEmployees(token!), enabled: !!token, });
+    const { data: reservations = [] } = useQuery({ queryKey:['reservations'], queryFn: () => listReservations(token!), enabled: !!token, });
 
     return (
         <div>
@@ -16,10 +16,10 @@ export default function Dashboard() {
             <div className="card">
                 <strong>Stats rapides</strong>
                 <ul>
-                    <li>Attractions: {attractions?.length ?? 0}</li>
-                    <li>Tickets: {tickets?.length ?? 0}</li>
-                    <li>Employees: {employees?.length ?? 0}</li>
-                    <li>Reservations: {reservations?.length ?? 0}</li>
+                    <li>Attractions: {attractions.length}</li>
+                    <li>Tickets: {tickets.length}</li>
+                    <li>Employees: {employees.length}</li>
+                    <li>Reservations: {reservations.length}</li>
                 </ul>
             </div>
         </div>
