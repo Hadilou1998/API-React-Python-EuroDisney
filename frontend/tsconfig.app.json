@@ -7,10 +7,8 @@
     "module": "ESNext",
     "skipLibCheck": true,
 
-    /* Correction pour le warning */
-    "ignoreDeprecations": "6.0",
     /* Bundler mode */
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "moduleDetection": "force",
