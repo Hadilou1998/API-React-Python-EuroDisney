@@ -9,3 +9,4 @@ email-validator
 qrcode[pil]
 pymysql
 python-multipart
+pydantic-settings
