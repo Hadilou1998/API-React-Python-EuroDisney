@@ -69,16 +69,16 @@ async def log_requests(request: Request, call_next):
     return response
 
 # Routers
-app.include_router(users.router, prefix="/auth", tags=["auth"])
-app.include_router(attractions.router, prefix="/attractions", tags=["attractions"])
-app.include_router(tickets.router, prefix="/tickets", tags=["tickets"])
-app.include_router(employees.router, prefix="/employees", tags=["employees"])
-app.include_router(reservations.router, prefix="/reservations", tags=["reservations"])
+app.include_router(users.router, prefix="/api/auth", tags=["auth"])
+app.include_router(attractions.router, prefix="/api/attractions", tags=["attractions"])
+app.include_router(tickets.router, prefix="/api/tickets", tags=["tickets"])
+app.include_router(employees.router, prefix="/api/employees", tags=["employees"])
+app.include_router(reservations.router, prefix="/api/reservations", tags=["reservations"])
 
 @app.get("/")
 async def root():
     return {"message": "Welcome to EuroDisney API"}
 
-@app.get("/health")
+@app.get("/api/health")
 async def health():
     return {"status": "OK", "message": "API is running"}
