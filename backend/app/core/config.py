@@ -4,7 +4,7 @@ class Settings(BaseSettings):
     app_name: str = "EuroDisney API"
 
     database_url: str = (
-        "mysql+pymysql://root@localhost/eurodisney?charset=utf8mb4"
+        "mysql+pymysql://root@localhost:3306/eurodisney?charset=utf8mb4"
     )
 
     secret_key: str = "mykey"
