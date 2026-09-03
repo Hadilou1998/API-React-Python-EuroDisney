@@ -22,6 +22,11 @@ class Settings(BaseSettings):
     @property
     def effective_database_url(self) -> str:
         if os.getenv("VERCEL"):
+            if os.name == "nt":
+                # Simulation Vercel sous Windows
+                return "sqlite:///./eurodisney_vercel.db"
+
+            # Vercel fonctionne sous Linux et /tmp est inscriptible
             return "sqlite:////tmp/eurodisney.db"
 
         return self.database_url

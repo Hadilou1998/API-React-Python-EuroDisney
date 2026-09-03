@@ -12,12 +12,20 @@ if DATABASE_URL.startswith("sqlite"):
         "check_same_thread": False,
     }
 
+engine_kwargs = {
+    "pool_pre_ping": True,
+    "echo": False,
+    "future": True,
+}
+
+# pool_recycle: temps de recycle de la pool de connexions (en secondes)
+if not DATABASE_URL.startswith("sqlite"):
+    engine_kwargs["pool_recycle"] = 280
+
 engine = create_engine(
-    settings.database_url,
-    pool_pre_ping=True,
-    pool_recycle=280,
-    echo=False, 
-    future=True,
+    DATABASE_URL,
+    connect_args=connect_args,
+    **engine_kwargs,
 )
 
 SessionLocal = sessionmaker(

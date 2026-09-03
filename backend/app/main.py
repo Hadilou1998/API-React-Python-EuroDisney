@@ -1,8 +1,14 @@
-from fastapi import FastAPI, Request, Response, HTTPException
+import logging
+import os
+
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-import logging
+
+from app.core.database import Base, engine, SessionLocal
+from app.models import User
 from app.routers import users, attractions, tickets, employees, reservations
+from app.seed import seed
 
 # App
 app = FastAPI(
@@ -11,11 +17,33 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# Database startup event
+@app.on_event("startup")
+def startup_database():
+    # En local, on continue d'utiliser MySQL/XAMPP normalement.
+    if not os.getenv("VERCEL"):
+        return
+
+    # Sur Vercel, création de la base SQLite dans /tmp.
+    Base.metadata.create_all(bind=engine)
+
+    db = SessionLocal()
+
+    try:
+        # Vérifier si la base est vide.
+        database_is_empty = db.query(User).first() is None
+    finally:
+        db.close()
+
+    # Si la base est vide, on seed.
+    if database_is_empty:
+        seed()
+
 # CORS
 origins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    "http://api-react-python-euro-disney.vercel.app",
+    "https://api-react-python-euro-disney.vercel.app",
 ]
 
 app.add_middleware(

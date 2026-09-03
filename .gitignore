@@ -11,3 +11,8 @@
 backend/.env
 backend/.env.backend
 backend/.env.backend.example
+
+# SQLite databases
+*.db
+*.sqlite
+*.sqlite3

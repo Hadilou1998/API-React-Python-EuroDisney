@@ -1,6 +1,8 @@
 from datetime import datetime
+
 from sqlalchemy.orm import Session
-from app.database import SessionLocal, engine, Base
+
+from app.core.database import SessionLocal, engine, Base
 from app.models import User, Attraction, AttractionStatus, Ticket, Employee, Reservation, ReservationStatus
 from app.core.security import get_password_hash
 
