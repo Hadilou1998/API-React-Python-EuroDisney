@@ -6,4 +6,8 @@
 .env.*
 !.env.example
 !.env.backend.example
-.env.backend.example
+
+# Ignore backend environment variables
+backend/.env
+backend/.env.backend
+backend/.env.backend.example
