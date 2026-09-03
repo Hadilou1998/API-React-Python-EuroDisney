@@ -1,3 +1,4 @@
+import os
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
@@ -10,7 +11,6 @@ class Settings(BaseSettings):
     secret_key: str = "mykey"
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 60
-
     BACKEND_CORS_ORIGINS: str = "*"
 
     model_config = SettingsConfigDict(
@@ -18,5 +18,12 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         extra="ignore",
     )
+
+    @property
+    def effective_database_url(self) -> str:
+        if os.getenv("VERCEL"):
+            return "sqlite:////tmp/eurodisney.db"
+
+        return self.database_url
     
 settings = Settings()
